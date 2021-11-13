@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom'
+import { callFetch } from './Fetch'
 
 function register ({ token }) {
   const [email, setEmail] = React.useState('');
@@ -12,21 +13,16 @@ function register ({ token }) {
     e.preventDefault();
     if (confirmPassword === password) {
       try {
-        await fetch('http://localhost:5005/user/auth/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: email,
-            name: name,
-            password: password
-          })
-        }).then(err => err.json()).then((erro) => {
-          throw erro.error;
-        });
+        const body = {
+          email: email,
+          name: name,
+          password: password
+        }
+        const data = await callFetch('POST', '/user/auth/register', body, true, false);
+        console.log(data.token);
+        console.log(email);
+        console.log(name);
       } catch (err) {
-        console.log(err);
         setErrorMsg(err);
       }
     } else {
@@ -43,7 +39,7 @@ function register ({ token }) {
             <div className="form-box solid">
               <form>
                 <h1 className="register-text">Sign Up</h1>
-                <label>email</label><br></br>
+                <label>Email</label><br></br>
                 <input
                   type="text"
                   name="email"

@@ -1,25 +1,39 @@
 // import PropTypes from 'prop-types';
-// import token from '../App';
 
-// function callFetch ({ method, path, body, hasContentType, hasToken }) {
-//   console.log(method);
-//   console.log(path);
-//   console.log(body);
-//   console.log(hasContentType);
-//   console.log(hasToken);
-//   const header = {}
-//   if (hasContentType) {
-//     header['Content-Type'] = 'application/json'
-//   }
-//   if (hasToken) {
-//     header.Authorization = `Bearer ${token}`
-//   }
-//   return fetch(`http://localhost:5005${path}`, {
-//     method: method,
-//     header: header,
-//     body: JSON.stringify(body)
-//   });
-// }
+export function callFetch (method, path, body, hasContentType, hasToken) {
+  console.log(method);
+  console.log(path);
+  console.log(hasContentType);
+  console.log(hasToken);
+  console.log(JSON.stringify(body));
+  const header = {}
+  if (hasContentType) {
+    header['Content-Type'] = 'application/json'
+  }
+  if (hasToken) {
+    const token = localStorage.getItem('curToken');
+    header.Authorization = `Bearer ${token}`
+  }
+  return new Promise((resolve, reject) => {
+    fetch(`http://localhost:5005${path}`, {
+      method: method,
+      header: header,
+      body: JSON.stringify(body)
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then(data => {
+            resolve(data);
+          });
+        } else {
+          response.json().then(errorMsg => {
+            reject(errorMsg.error);
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+  });
+}
 
 // callFetch.propTypes = {
 //   method: PropTypes.string,
@@ -28,5 +42,3 @@
 //   hasContentType: PropTypes.bool,
 //   hasToken: PropTypes.bool
 // }
-
-// export default callFetch;

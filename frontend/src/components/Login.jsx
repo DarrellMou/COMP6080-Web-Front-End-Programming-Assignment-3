@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom';
+import { callFetch } from './Fetch'
 
 function Login ({ token, setToken }) {
   const [email, setEmail] = React.useState('');
@@ -9,27 +10,15 @@ function Login ({ token, setToken }) {
   const submitLogIn = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:5005/user/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password
-        })
-      });
-
-      if (!res.ok) {
-        console.log(res.statusText);
-        setErrorMsg('The email or password is incorrect.');
-      } else {
-        const data = await res.json();
-        setToken(data.token);
-        <Navigate to="/"/>
-      }
+      const data = await callFetch('POST', '/user/auth/login', {
+        email: email,
+        password: password
+      }, true, false);
+      localStorage.setItem('curToken', data.token);
+      setErrorMsg('');
+      <Navigate to="/"/>
     } catch (error) {
-      console.log(error);
+      setErrorMsg(error);
     }
   }
   const isToken = token === '';
