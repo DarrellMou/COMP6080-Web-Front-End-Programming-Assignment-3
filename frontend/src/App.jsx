@@ -4,6 +4,7 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
 import NavBar from './components/NavBar';
+import Listings from './components/Listings';
 
 function App () {
   const [token, setToken] = React.useState('');
@@ -15,6 +16,8 @@ function App () {
         <Route path="/" element={<Home />}/>
         <Route exact path="/login" element={<Login token={token} setToken={setToken} />}/>
         <Route exact path="/register" element={<Register token={token} />}/>
+        <Route exact path="/alllistings" element={<Listings token={token} />}/>
+        <Route exact path="/yourlistings" element={<Listings token={token} />}/>
       </Routes>
     </Router>
   );

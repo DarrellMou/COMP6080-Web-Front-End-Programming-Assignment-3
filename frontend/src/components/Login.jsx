@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom';
 
 function Login ({ token, setToken }) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [errorMsg, setErrorMsg] = React.useState('');
   const submitLogIn = async (e) => {
     e.preventDefault();
     try {
@@ -21,6 +22,7 @@ function Login ({ token, setToken }) {
 
       if (!res.ok) {
         console.log(res.statusText);
+        setErrorMsg('The email or password is incorrect.');
       } else {
         const data = await res.json();
         setToken(data.token);
@@ -54,6 +56,7 @@ function Login ({ token, setToken }) {
                   className="login-box"
                   onBlur={e => setPassword(e.target.value)}
                 /><br></br>
+                {(errorMsg === '') ? <></> : (<div className="error-message">{errorMsg}</div>)}
                 <button onClick={submitLogIn}>Log in</button>
               </form>
             </div>

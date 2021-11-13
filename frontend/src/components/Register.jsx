@@ -27,6 +27,7 @@ function register ({ token }) {
         });
       } catch (err) {
         console.log(err);
+        setErrorMsg(err);
       }
     } else {
       setErrorMsg('Passwords do not match.');
@@ -70,11 +71,7 @@ function register ({ token }) {
                   className="register-box"
                   onBlur={e => setConfirmPassword(e.target.value)}
                 /><br></br>
-                {(errorMsg === '')
-                  ? ''
-                  : (<div className="error-message">
-                    {errorMsg}
-                </div>)}
+                {(errorMsg === '') ? <></> : (<div className="error-message">{errorMsg}</div>)}
                 <button onClick={submitRegister}>Sign up</button>
               </form>
             </div>

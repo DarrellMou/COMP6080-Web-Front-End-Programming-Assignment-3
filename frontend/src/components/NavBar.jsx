@@ -36,11 +36,12 @@ function NavBar ({ token, setToken }) {
         </Nav>
         <Nav>
           <NavDropdown title="Menu" id="collasible-nav-dropdown">
-            <NavDropdown.Item as={Link} to="/login">Login</NavDropdown.Item>
-            <NavDropdown.Item as={Link} to="/register">Register</NavDropdown.Item>
-            <NavDropdown.Item onClick={submitLogOut}>Logout</NavDropdown.Item>
+            {(token === '') ? (<NavDropdown.Item as={Link} to="/login">Login</NavDropdown.Item>) : <></>}
+            {(token === '') ? (<NavDropdown.Item as={Link} to="/register">Register</NavDropdown.Item>) : <></>}
+            {(token !== '') ? (<NavDropdown.Item onClick={submitLogOut}>Logout</NavDropdown.Item>) : <></>}
             <NavDropdown.Divider />
-            <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/alllistings">All Listings</NavDropdown.Item>
+            {(token !== '') ? (<NavDropdown.Item as={Link} to="/yourlistings">Your Listings</NavDropdown.Item>) : <></>}
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>
