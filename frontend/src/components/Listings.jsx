@@ -46,7 +46,7 @@ function Listings ({ token }) {
           console.log(listing.address);
           return (
             <Grid item xs={4} key={idx}>
-              {/* listing.address is an object, and apparently you cannot pass in address into props. DEAL WITH THIS!! */}
+              {/* listing.address is an object, and apparently you cannot pass in objects into props. DEAL WITH THIS!! */}
               <Listing title={listing.title} address={listing.address} price={listing.price} thumbnail={listing.thumbnail} propertyType={listing.propertyType} numOfBathrooms={listing.numOfBathrooms} propertyBedrooms={listing.propertyBedrooms} propertyAmenities={listing.propertyAmenities}/>
             </Grid>
           )
