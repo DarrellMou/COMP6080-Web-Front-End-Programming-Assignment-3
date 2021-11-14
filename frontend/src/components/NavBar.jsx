@@ -4,7 +4,7 @@ import { Nav, Container, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function NavBar ({ token, setToken }) {
+function NavBar ({ token, setIsTokenEmpty }) {
   const submitLogOut = async (e) => {
     e.preventDefault();
     try {
@@ -18,13 +18,15 @@ function NavBar ({ token, setToken }) {
       if (!res.ok) {
         console.log(res.statusText);
       } else {
-        setToken('');
+        localStorage.setItem('curToken', '');
+        setIsTokenEmpty(true);
         <Navigate to="/"/>
       }
     } catch (error) {
       console.log(error);
     }
   }
+  const isToken = (token === '');
   return (<>
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -36,12 +38,12 @@ function NavBar ({ token, setToken }) {
         </Nav>
         <Nav>
           <NavDropdown title="Menu" id="collasible-nav-dropdown">
-            {(token === '') ? (<NavDropdown.Item as={Link} to="/login">Login</NavDropdown.Item>) : <></>}
-            {(token === '') ? (<NavDropdown.Item as={Link} to="/register">Register</NavDropdown.Item>) : <></>}
-            {(token !== '') ? (<NavDropdown.Item onClick={submitLogOut}>Logout</NavDropdown.Item>) : <></>}
+            {isToken ? (<NavDropdown.Item as={Link} to="/login">Login</NavDropdown.Item>) : <></>}
+            {isToken ? (<NavDropdown.Item as={Link} to="/register">Register</NavDropdown.Item>) : <></>}
+            {!isToken ? (<NavDropdown.Item onClick={submitLogOut}>Logout</NavDropdown.Item>) : <></>}
             <NavDropdown.Divider />
             <NavDropdown.Item as={Link} to="/alllistings">All Listings</NavDropdown.Item>
-            {(token !== '') ? (<NavDropdown.Item as={Link} to="/yourlistings">Your Listings</NavDropdown.Item>) : <></>}
+            {!isToken ? (<NavDropdown.Item as={Link} to="/yourlistings">Your Listings</NavDropdown.Item>) : <></>}
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>
@@ -52,7 +54,7 @@ function NavBar ({ token, setToken }) {
 
 NavBar.propTypes = {
   token: PropTypes.string,
-  setToken: PropTypes.func
+  setIsTokenEmpty: PropTypes.func
 }
 
 export default NavBar;

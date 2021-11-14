@@ -7,17 +7,23 @@ import NavBar from './components/NavBar';
 import Listings from './components/Listings';
 
 function App () {
-  const [token, setToken] = React.useState('');
+  const [isTokenEmpty, setIsTokenEmpty] = React.useState(false);
+  React.useEffect(() => {
+    if (localStorage.getItem('curToken') === '') {
+      setIsTokenEmpty(true);
+      console.log(isTokenEmpty);
+    }
+  }, []);
   return (
     <Router>
-      <NavBar token={token} setToken={setToken} />
+      <NavBar token={localStorage.getItem('curToken') } setIsTokenEmpty={setIsTokenEmpty} />
 
       <Routes>
         <Route path="/" element={<Home />}/>
-        <Route exact path="/login" element={<Login token={token} setToken={setToken} />}/>
-        <Route exact path="/register" element={<Register token={token} />}/>
-        <Route exact path="/alllistings" element={<Listings token={token} />}/>
-        <Route exact path="/yourlistings" element={<Listings token={token} />}/>
+        <Route exact path="/login" element={<Login token={localStorage.getItem('curToken')} setIsTokenEmpty={setIsTokenEmpty} />}/>
+        <Route exact path="/register" element={<Register token={localStorage.getItem('curToken')} />}/>
+        <Route exact path="/alllistings" element={<Listings token={localStorage.getItem('curToken')} />}/>
+        <Route exact path="/yourlistings" element={<Listings token={localStorage.getItem('curToken')} />}/>
       </Routes>
     </Router>
   );

@@ -1,11 +1,6 @@
 // import PropTypes from 'prop-types';
 
 export function callFetch (method, path, body, hasContentType, hasToken) {
-  console.log(method);
-  console.log(path);
-  console.log(hasContentType);
-  console.log(hasToken);
-  console.log(JSON.stringify(body));
   const header = {}
   if (hasContentType) {
     header['Content-Type'] = 'application/json'
@@ -28,7 +23,6 @@ export function callFetch (method, path, body, hasContentType, hasToken) {
         } else {
           response.json().then(errorMsg => {
             reject(errorMsg.error);
-            console.log('1');
             console.log(errorMsg);
           });
         }
@@ -36,11 +30,3 @@ export function callFetch (method, path, body, hasContentType, hasToken) {
       .catch((err) => console.log(err));
   });
 }
-
-// callFetch.propTypes = {
-//   method: PropTypes.string,
-//   path: PropTypes.string,
-//   body: PropTypes.object,
-//   hasContentType: PropTypes.bool,
-//   hasToken: PropTypes.bool
-// }

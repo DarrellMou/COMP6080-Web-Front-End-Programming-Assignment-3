@@ -18,10 +18,8 @@ function register ({ token }) {
           name: name,
           password: password
         }
-        const data = await callFetch('POST', '/user/auth/register', body, true, false);
-        console.log(data.token);
-        console.log(email);
-        console.log(name);
+        await callFetch('POST', '/user/auth/register', body, true, false);
+        setErrorMsg('');
       } catch (err) {
         setErrorMsg(err);
       }
@@ -29,7 +27,7 @@ function register ({ token }) {
       setErrorMsg('Passwords do not match.');
     }
   }
-  const isToken = token === '';
+  const isToken = (token === '');
   return (
     <>
       { isToken
@@ -80,7 +78,6 @@ function register ({ token }) {
 
 register.propTypes = {
   token: PropTypes.string,
-  setToken: PropTypes.func
 }
 
 export default register;

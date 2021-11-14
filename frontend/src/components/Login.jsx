@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom';
 import { callFetch } from './Fetch'
 
-function Login ({ token, setToken }) {
+function Login ({ token, setIsTokenEmpty }) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
@@ -15,14 +15,14 @@ function Login ({ token, setToken }) {
         password: password
       }, true, false);
       localStorage.setItem('curToken', data.token);
+      setIsTokenEmpty(false);
       setErrorMsg('');
       <Navigate to="/"/>
     } catch (error) {
-      console.log('2');
       setErrorMsg(error);
     }
   }
-  const isToken = token === '';
+  const isToken = (token === '');
   return (
     <>
       { isToken
@@ -59,7 +59,7 @@ function Login ({ token, setToken }) {
 
 Login.propTypes = {
   token: PropTypes.string,
-  setToken: PropTypes.func
+  setIsTokenEmpty: PropTypes.func
 }
 
 export default Login;
