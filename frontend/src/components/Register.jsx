@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom'
 import { callFetch } from './Fetch'
 
-function register ({ token }) {
+function register ({ setIsTokenEmpty }) {
   const [email, setEmail] = React.useState('');
   const [name, setName] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -18,7 +18,10 @@ function register ({ token }) {
           name: name,
           password: password
         }
-        await callFetch('POST', '/user/auth/register', body, true, false);
+        const data = await callFetch('POST', '/user/auth/register', body, true, false);
+        localStorage.setItem('curEmail', email);
+        localStorage.setItem('curToken', data.token);
+        setIsTokenEmpty(false);
         setErrorMsg('');
       } catch (err) {
         setErrorMsg(err);
@@ -27,12 +30,11 @@ function register ({ token }) {
       setErrorMsg('Passwords do not match.');
     }
   }
-  const isToken = (token === '');
   return (
     <>
-      { isToken
+      { (localStorage.getItem('curToken') === '')
         ? (
-        <div className={ `${(token !== '') ? 'active' : ''} show`}>
+        <div className={ 'show' }>
           <div className="register-form">
             <div className="form-box solid">
               <form>
@@ -77,7 +79,7 @@ function register ({ token }) {
 }
 
 register.propTypes = {
-  token: PropTypes.string,
+  setIsTokenEmpty: PropTypes.func
 }
 
 export default register;

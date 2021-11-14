@@ -4,14 +4,14 @@ import { Nav, Container, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function NavBar ({ token, setIsTokenEmpty, setEmail }) {
+function NavBar ({ setIsTokenEmpty }) {
   const submitLogOut = async (e) => {
     e.preventDefault();
     try {
       const res = await fetch('http://localhost:5005/user/auth/logout', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${localStorage.getItem('curToken')}`
         }
       });
 
@@ -26,7 +26,6 @@ function NavBar ({ token, setIsTokenEmpty, setEmail }) {
       console.log(error);
     }
   }
-  const isToken = (token === '');
   return (<>
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -34,16 +33,21 @@ function NavBar ({ token, setIsTokenEmpty, setEmail }) {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="me-auto">
-          <Nav.Link href="#features">Features</Nav.Link>
+          <Nav.Link as={Link} to="placeholder">:]</Nav.Link>
         </Nav>
         <Nav>
           <NavDropdown title="Menu" id="collasible-nav-dropdown">
-            {isToken ? (<NavDropdown.Item as={Link} to="/login">Login</NavDropdown.Item>) : <></>}
-            {isToken ? (<NavDropdown.Item as={Link} to="/register">Register</NavDropdown.Item>) : <></>}
-            {!isToken ? (<NavDropdown.Item onClick={submitLogOut}>Logout</NavDropdown.Item>) : <></>}
+            {(localStorage.getItem('curToken') === '')
+              ? (
+              <>
+                <NavDropdown.Item as={Link} to="/login">Login</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/register">Register</NavDropdown.Item>
+              </>)
+              : <>
+                <NavDropdown.Item onClick={submitLogOut}>Logout</NavDropdown.Item>
+              </>}
             <NavDropdown.Divider />
-            <NavDropdown.Item as={Link} to="/alllistings">All Listings</NavDropdown.Item>
-            {!isToken ? (<NavDropdown.Item as={Link} to="/yourlistings">Your Listings</NavDropdown.Item>) : <></>}
+            {!(localStorage.getItem('curToken') === '') ? (<NavDropdown.Item as={Link} to="/yourlistings">Your Listings</NavDropdown.Item>) : <></>}
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>
@@ -53,9 +57,7 @@ function NavBar ({ token, setIsTokenEmpty, setEmail }) {
 }
 
 NavBar.propTypes = {
-  token: PropTypes.string,
-  setIsTokenEmpty: PropTypes.func,
-  setEmail: PropTypes.func
+  setIsTokenEmpty: PropTypes.func
 }
 
 export default NavBar;

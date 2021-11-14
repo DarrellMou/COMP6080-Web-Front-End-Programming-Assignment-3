@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom';
 import { callFetch } from './Fetch'
 
-function Login ({ token, setIsTokenEmpty, email, setEmail }) {
+function Login ({ setIsTokenEmpty }) {
+  const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
   const submitLogIn = async (e) => {
@@ -14,6 +15,7 @@ function Login ({ token, setIsTokenEmpty, email, setEmail }) {
         password: password
       }, true, false);
       localStorage.setItem('curToken', data.token);
+      localStorage.setItem('curEmail', email);
       setIsTokenEmpty(false);
       setErrorMsg('');
       <Navigate to="/"/>
@@ -21,10 +23,9 @@ function Login ({ token, setIsTokenEmpty, email, setEmail }) {
       setErrorMsg(error);
     }
   }
-  const isToken = (token === '');
   return (
     <>
-      { isToken
+      { (localStorage.getItem('curToken') === '')
         ? (
         <div className={ 'show' }>
           <div className="login-form">
