@@ -18,6 +18,7 @@ function Login ({ token, setToken }) {
       setErrorMsg('');
       <Navigate to="/"/>
     } catch (error) {
+      console.log('2');
       setErrorMsg(error);
     }
   }

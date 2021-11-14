@@ -17,7 +17,7 @@ export function callFetch (method, path, body, hasContentType, hasToken) {
   return new Promise((resolve, reject) => {
     fetch(`http://localhost:5005${path}`, {
       method: method,
-      header: header,
+      headers: header,
       body: JSON.stringify(body)
     })
       .then((response) => {
@@ -28,6 +28,8 @@ export function callFetch (method, path, body, hasContentType, hasToken) {
         } else {
           response.json().then(errorMsg => {
             reject(errorMsg.error);
+            console.log('1');
+            console.log(errorMsg);
           });
         }
       })
