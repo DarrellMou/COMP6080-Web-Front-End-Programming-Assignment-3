@@ -1,18 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-function Listing ({ title, address, price, thumbnail, propertyType, numOfBathrooms, propertyBedrooms, propertyAmenities }) {
+function Listing ({ title, address, price, thumbnail, propertyType, numOfBathrooms, numOfBeds }) {
+  console.log(title);
+  console.log(address);
+  console.log(price);
+  console.log(thumbnail);
+  console.log(propertyType);
+  console.log(numOfBathrooms);
+  console.log(numOfBeds);
   return (
     <>
       <div>
         {title}
+        {propertyType}
+        {numOfBeds}
+        {numOfBathrooms}
+        <img src={thumbnail} />
         {address}
         {price}
-        <img src={thumbnail} />
         {propertyType}
-        {numOfBathrooms}
-        {propertyBedrooms}
-        {propertyAmenities}
       </div>
     </>
   )
@@ -25,8 +32,7 @@ Listing.propTypes = {
   thumbnail: PropTypes.string,
   propertyType: PropTypes.string,
   numOfBathrooms: PropTypes.number,
-  propertyBedrooms: PropTypes.number,
-  propertyAmenities: PropTypes.string
+  numOfBeds: PropTypes.number,
 }
 
 export default Listing;

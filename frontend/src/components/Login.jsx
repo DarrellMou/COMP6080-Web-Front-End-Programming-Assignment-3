@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom';
 import { callFetch } from './Fetch'
 
-function Login ({ token, setIsTokenEmpty }) {
-  const [email, setEmail] = React.useState('');
+function Login ({ token, setIsTokenEmpty, email, setEmail }) {
   const [password, setPassword] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
   const submitLogIn = async (e) => {
@@ -59,7 +58,9 @@ function Login ({ token, setIsTokenEmpty }) {
 
 Login.propTypes = {
   token: PropTypes.string,
-  setIsTokenEmpty: PropTypes.func
+  setIsTokenEmpty: PropTypes.func,
+  email: PropTypes.string,
+  setEmail: PropTypes.func
 }
 
 export default Login;

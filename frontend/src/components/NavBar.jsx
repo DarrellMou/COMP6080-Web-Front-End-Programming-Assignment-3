@@ -4,7 +4,7 @@ import { Nav, Container, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function NavBar ({ token, setIsTokenEmpty }) {
+function NavBar ({ token, setIsTokenEmpty, setEmail }) {
   const submitLogOut = async (e) => {
     e.preventDefault();
     try {
@@ -54,7 +54,8 @@ function NavBar ({ token, setIsTokenEmpty }) {
 
 NavBar.propTypes = {
   token: PropTypes.string,
-  setIsTokenEmpty: PropTypes.func
+  setIsTokenEmpty: PropTypes.func,
+  setEmail: PropTypes.func
 }
 
 export default NavBar;
