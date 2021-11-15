@@ -12,16 +12,7 @@ export function AllListings () {
   React.useEffect(async () => {
     try {
       const data = await callFetch('GET', '/listings', undefined, false, false);
-      const promiseList = data.listings.map(async (l) => {
-        return callFetch('GET', `/listings/${l.id}`, undefined, false, false);
-      })
-      Promise.all(promiseList)
-        .then((myList) => {
-          const a = myList.map((l) => {
-            return l.listing;
-          });
-          setListings(a);
-        });
+      setListings(data.listings.map(l => l.id));
     } catch (error) {
       setErrorMsg(error);
     }
@@ -34,10 +25,10 @@ export function AllListings () {
       : (
       <Grid container spacing={2}>
         {/* If email is not empty, only provide listings that belongs to the email */}
-        {listings.map(({ title, address, price, thumbnail, metadata }, idx) => {
+        {listings.map((l, idx) => {
           return (
             <Grid item xs={3} key={idx}>
-              <Listing title={title} address={address} price={price} thumbnail={thumbnail} metadata={metadata} />
+              <Listing listingId={l} isYourListing={false} />
             </Grid>
           )
         })}
@@ -46,7 +37,7 @@ export function AllListings () {
   </>)
 }
 
-export function MyListings () {
+export function YourListings () {
   const [errorMsg, setErrorMsg] = React.useState('');
   const [listings, setListings] = React.useState([]);
   const navigate = useNavigate();
@@ -55,23 +46,11 @@ export function MyListings () {
     try {
       const data = await callFetch('GET', '/listings', undefined, false, false);
       const listings = data.listings.filter((l) => l.owner === ownerEmail);
-      const promiseList = listings.map(async (l) => {
-        return callFetch('GET', `/listings/${l.id}`, undefined, false, false);
-      })
-      Promise.all(promiseList)
-        .then((myList) => {
-          const a = myList.map((l) => {
-            return l.listing;
-          });
-          setListings(a);
-        });
+      setListings(listings.map(l => (l.id)));
     } catch (error) {
       setErrorMsg(error);
     }
   }, [])
-  const MoveToCreateListing = () => {
-    navigate('/createlisting');
-  }
 
   return (
   <>
@@ -80,16 +59,18 @@ export function MyListings () {
       : (
       <Grid container spacing={2}>
         {/* If email is not empty, only provide listings that belongs to the email */}
-        {listings.map(({ title, address, price, thumbnail, metadata }, idx) => {
+        {listings.map((l, idx) => {
           return (
             <Grid item xs={3} key={idx}>
-              <Listing title={title} address={address} price={price} thumbnail={thumbnail} metadata={metadata} />
+              <Listing listingId={l} isYourListing={true} />
             </Grid>
           )
         })}
       </Grid>
         )}
-    <Button variant='outlined' startIcon={<CreateIcon />} onClick={MoveToCreateListing}>
+    <br />
+    <br />
+    <Button variant='outlined' startIcon={<CreateIcon />} onClick={() => { navigate('/createlisting') }}>
       Create
     </Button>
   </>)

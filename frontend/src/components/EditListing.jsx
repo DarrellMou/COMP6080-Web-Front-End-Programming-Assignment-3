@@ -1,8 +1,10 @@
 import React from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
+// import PropTypes from 'prop-types';
 // import { callFetch } from './Fetch';
 import { Form, Row, Col, FloatingLabel } from 'react-bootstrap';
 import Button from '@mui/material/Button';
+import CancelIcon from '@mui/icons-material/Cancel';
 import CreateIcon from '@mui/icons-material/Create';
 import { callFetch } from './Fetch'
 
@@ -15,21 +17,39 @@ const getBase64 = (file) => { // code obtained from https://www.codegrepper.com/
   });
 }
 
-function CreateListing () {
+function EditListing () {
+  const id = useParams().id;
   const [title, setTitle] = React.useState('');
   const [street, setStreet] = React.useState('');
   const [city, setCity] = React.useState('');
   const [state, setState] = React.useState('');
-  const [postcode, setPostcode] = React.useState(0);
+  const [postcode, setPostcode] = React.useState('');
   const [country, setCountry] = React.useState('');
-  const [price, setPrice] = React.useState(0);
+  const [price, setPrice] = React.useState('');
   const [thumbnail, setThumbnail] = React.useState('');
   const [propertyType, setPropertyType] = React.useState('');
-  const [numOfBaths, setNumOfBaths] = React.useState(0);
-  const [numOfBedrooms, setNumOfBedrooms] = React.useState(0);
+  const [numOfBaths, setNumOfBaths] = React.useState('');
+  const [numOfBedrooms, setNumOfBedrooms] = React.useState('');
   const [amenities, setAmenities] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
   const navigate = useNavigate();
+
+  React.useEffect(async () => {
+    const data = await callFetch('GET', `/listings/${id}`, undefined, false, false);
+    setTitle(data.listing.title);
+    setStreet(data.listing.address.street);
+    setCity(data.listing.address.city);
+    setState(data.listing.address.state);
+    setPostcode(data.listing.address.postcode);
+    setCountry(data.listing.address.country);
+    setPrice(data.listing.price);
+    setThumbnail(data.listing.thumbnail);
+    setPropertyType(data.listing.metadata.propertyType);
+    setNumOfBaths(data.listing.metadata.numOfBaths);
+    setNumOfBedrooms(data.listing.metadata.numOfBedrooms);
+    setAmenities(data.listing.metadata.amenities);
+  }, [])
+
   const submitListing = async (e) => {
     e.preventDefault();
     try {
@@ -43,20 +63,26 @@ function CreateListing () {
           country: country
         },
         price: price,
-        thumbnail: await getBase64(thumbnail),
         metadata: {
           propertyType: propertyType,
           numOfBaths: numOfBaths,
           numOfBedrooms: numOfBedrooms,
           amenities: amenities
         }
+      };
+      if (typeof thumbnail !== 'string') {
+        const data = await getBase64(thumbnail);
+        body.thumbnail = data;
+      } else {
+        body.thumbnail = thumbnail;
       }
-      await callFetch('POST', '/listings/new', body, true, true);
+      await callFetch('PUT', `/listings/${id}`, body, true, true);
       navigate('/yourlistings');
     } catch (err) {
       setErrorMsg(err);
     }
   }
+
   return (
     <>
       { (localStorage.getItem('curToken') !== null)
@@ -64,33 +90,33 @@ function CreateListing () {
           <Form>
             <Form.Group className="mb-3" controlId="formGridTitle">
               <Form.Label>Title</Form.Label>
-              <Form.Control onBlur={e => setTitle(e.target.value)} type="text" placeholder="Enter title" />
+              <Form.Control defaultValue={title} onBlur={e => setTitle(e.target.value)} type="text" placeholder="Enter title" />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGridAddress">
               <Form.Label>Address</Form.Label>
-              <Form.Control onBlur={e => setStreet(e.target.value)} type="text" placeholder="1234 Main St" />
+              <Form.Control defaultValue={street} onBlur={e => setStreet(e.target.value)} type="text" placeholder="1234 Main St" />
             </Form.Group>
             <Row className="mb-3">
               <Form.Group as={Col} controlId="formGridCity">
                 <Form.Label>City</Form.Label>
-                <Form.Control onBlur={e => setCity(e.target.value)} type="text" />
+                <Form.Control defaultValue={city} onBlur={e => setCity(e.target.value)} type="text" />
               </Form.Group>
               <Form.Group as={Col} controlId="formGridState">
                 <Form.Label>State</Form.Label>
-                <Form.Control onBlur={e => setState(e.target.value)} type="text" />
+                <Form.Control defaultValue={state} onBlur={e => setState(e.target.value)} type="text" />
               </Form.Group>
               <Form.Group as={Col} controlId="formGridZip">
                 <Form.Label>Zip</Form.Label>
-                <Form.Control onBlur={e => setPostcode(e.target.value)} type="number" />
+                <Form.Control defaultValue={postcode} onBlur={e => setPostcode(e.target.value)} type="number" />
               </Form.Group>
               <Form.Group as={Col} controlId="formGridCountry">
                 <Form.Label>Country</Form.Label>
-                <Form.Control onBlur={e => setCountry(e.target.value)} type="text" />
+                <Form.Control defaultValue={country} onBlur={e => setCountry(e.target.value)} type="text" />
               </Form.Group>
             </Row>
             <Form.Group className="mb-3" controlId="formGridPrice">
               <Form.Label>Price</Form.Label>
-              <Form.Control onBlur={e => setPrice(e.target.value)} type="text" placeholder="Enter price" />
+              <Form.Control defaultValue={price} onBlur={e => setPrice(e.target.value)} type="text" placeholder="Enter price" />
             </Form.Group>
             <Form.Group controlId="formFile" className="mb-3">
               <Form.Label>Thumbnail</Form.Label>
@@ -99,28 +125,32 @@ function CreateListing () {
             <Row className="mb-3">
               <Form.Group as={Col} controlId="formGridPropertyType">
                 <Form.Label>Property Type</Form.Label>
-                <Form.Control onBlur={e => setPropertyType(e.target.value)} type="text" placeholder="Enter property type" />
+                <Form.Control defaultValue={propertyType} onBlur={e => setPropertyType(e.target.value)} type="text" placeholder="Enter property type" />
               </Form.Group>
               <Form.Group as={Col} controlId="formGridNumOfBaths">
                 <Form.Label>Number of bathrooms</Form.Label>
-                <Form.Control onBlur={e => setNumOfBaths(e.target.value)} type="text" />
+                <Form.Control defaultValue={numOfBaths} onBlur={e => setNumOfBaths(e.target.value)} type="text" />
               </Form.Group>
               <Form.Group as={Col} controlId="formGridNumOfBedrooms">
                 <Form.Label>Number of bedrooms</Form.Label>
-                <Form.Control onBlur={e => setNumOfBedrooms(e.target.value)} type="text" />
+                <Form.Control defaultValue={numOfBedrooms} onBlur={e => setNumOfBedrooms(e.target.value)} type="text" />
               </Form.Group>
             </Row>
             <FloatingLabel controlId="floatingTextarea" label="Amenities">
               <Form.Control
+                defaultValue={amenities}
                 as="textarea"
                 placeholder="Amenities"
                 style={{ height: '100px' }}
                 onBlur={e => setAmenities(e.target.value)}
               />
           </FloatingLabel>
-          {(errorMsg === '') ? <></> : (<div className="error-message">{errorMsg}</div>)}
+                {(errorMsg === '') ? <></> : (<div className="error-message">{errorMsg}</div>)}
           <Button variant='outlined' startIcon={<CreateIcon />} onClick={submitListing}>
-            Create
+            Confirm
+          </Button>
+          <Button variant='outlined' startIcon={<CancelIcon />} onClick={() => { navigate('/yourlistings') }}>
+            Cancel
           </Button>
           </Form>)
         : <Navigate to="/"/> }
@@ -128,4 +158,7 @@ function CreateListing () {
   );
 }
 
-export default CreateListing;
+EditListing.propTypes = {
+}
+
+export default EditListing;
