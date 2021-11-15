@@ -11,8 +11,12 @@ export function AllListings () {
   const [listings, setListings] = React.useState([]);
   React.useEffect(async () => {
     try {
+      const ownerEmail = localStorage.getItem('curEmail');
       const data = await callFetch('GET', '/listings', undefined, false, false);
-      setListings(data.listings.map(l => l.id));
+      const listingsOrdered = [...data.listings].sort((a, b) => a.title.localeCompare(b.title)).sort((a, b) => {
+        return (b.owner === ownerEmail) ? 1 : ((a.owner === ownerEmail) ? -1 : 1);
+      });
+      setListings(listingsOrdered.map(l => l.id));
     } catch (error) {
       setErrorMsg(error);
     }
@@ -46,7 +50,8 @@ export function YourListings () {
     try {
       const data = await callFetch('GET', '/listings', undefined, false, false);
       const listings = data.listings.filter((l) => l.owner === ownerEmail);
-      setListings(listings.map(l => (l.id)));
+      const listingsOrdered = [...listings].sort((a, b) => a.title.localeCompare(b.title));
+      setListings(listingsOrdered.map(l => (l.id)));
     } catch (error) {
       setErrorMsg(error);
     }
