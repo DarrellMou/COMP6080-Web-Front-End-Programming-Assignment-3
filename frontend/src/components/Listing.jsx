@@ -3,6 +3,17 @@ import PropTypes from 'prop-types';
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 function Listing ({ title, address, price, thumbnail, metadata }) {
+  console.log('title: ' + title);
+  console.log('address: ' + JSON.stringify(address));
+  console.log('price: ' + price);
+  console.log('thumbnail: ' + thumbnail);
+  console.log('metadata: ' + metadata);
+  let addressStr = '';
+  (address.street !== undefined) && (addressStr += address.street + ' ');
+  (address.city !== undefined) && (addressStr += address.city + ' ');
+  (address.state !== undefined) && (addressStr += address.state + ' ');
+  (address.postcode !== undefined) && (addressStr += address.postcode + ' ');
+  (address.country !== undefined) && (addressStr += address.country + ' ');
   return (
     <>
       <Card style={{ width: '18rem' }}>
@@ -11,7 +22,7 @@ function Listing ({ title, address, price, thumbnail, metadata }) {
           <Card.Title>{title}</Card.Title>
         </Card.Body>
         <ListGroup className="list-group-flush">
-          {address ? <ListGroupItem>{JSON.stringify(address)}</ListGroupItem> : <></>}
+          {(addressStr !== '') ? <ListGroupItem>{addressStr}</ListGroupItem> : <></>}
           <ListGroupItem>${price} per night</ListGroupItem>
           {/* {propertyType ? <ListGroupItem>{propertyType}</ListGroupItem> : <></>}
           {numOfBathrooms ? <ListGroupItem>{numOfBathrooms}</ListGroupItem> : <></>}

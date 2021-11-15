@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Nav, Container, Navbar, NavDropdown } from 'react-bootstrap'
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function NavBar ({ setIsTokenEmpty }) {
+  const navigate = useNavigate();
   const submitLogOut = async (e) => {
     e.preventDefault();
     try {
@@ -20,7 +21,7 @@ function NavBar ({ setIsTokenEmpty }) {
       } else {
         localStorage.removeItem('curToken');
         setIsTokenEmpty(true);
-        <Navigate to="/"/>
+        navigate('/');
       }
     } catch (error) {
       console.log(error);
@@ -37,7 +38,7 @@ function NavBar ({ setIsTokenEmpty }) {
         </Nav>
         <Nav>
           <NavDropdown title="Menu" id="collasible-nav-dropdown">
-            {(localStorage.getItem('curToken') === '')
+            {(localStorage.getItem('curToken') === null)
               ? (
               <>
                 <NavDropdown.Item as={Link} to="/login">Login</NavDropdown.Item>
@@ -46,8 +47,8 @@ function NavBar ({ setIsTokenEmpty }) {
               : <>
                 <NavDropdown.Item onClick={submitLogOut}>Logout</NavDropdown.Item>
               </>}
-            <NavDropdown.Divider />
-            {!(localStorage.getItem('curToken') === '') ? (<NavDropdown.Item as={Link} to="/yourlistings">Your Listings</NavDropdown.Item>) : <></>}
+            {!(localStorage.getItem('curToken') === null) ? (<NavDropdown.Divider />) : <></>}
+            {!(localStorage.getItem('curToken') === null) ? (<NavDropdown.Item as={Link} to="/yourlistings">Your Listings</NavDropdown.Item>) : <></>}
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>

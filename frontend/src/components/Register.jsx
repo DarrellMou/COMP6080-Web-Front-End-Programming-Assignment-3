@@ -32,7 +32,7 @@ function register ({ setIsTokenEmpty }) {
   }
   return (
     <>
-      { (localStorage.getItem('curToken') === '')
+      { (localStorage.getItem('curToken') === null)
         ? (
         <div className={ 'show' }>
           <div className="register-form">

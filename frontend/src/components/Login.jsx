@@ -18,14 +18,13 @@ function Login ({ setIsTokenEmpty }) {
       localStorage.setItem('curEmail', email);
       setIsTokenEmpty(false);
       setErrorMsg('');
-      <Navigate to="/"/>
     } catch (error) {
       setErrorMsg(error);
     }
   }
   return (
     <>
-      { (localStorage.getItem('curToken') === '')
+      { (localStorage.getItem('curToken') === null)
         ? (
         <div className={ 'show' }>
           <div className="login-form">
