@@ -4,6 +4,7 @@ import { Card, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { callFetch } from './Fetch'
 import Button from '@mui/material/Button';
+import { unpublish } from './UnpublishListing';
 
 function Listing ({ listingId, isYourListing }) {
   const [title, setTitle] = React.useState('');
@@ -14,6 +15,7 @@ function Listing ({ listingId, isYourListing }) {
   const [numOfBedrooms, setNumOfBedrooms] = React.useState('');
   const [amenities, setAmenities] = React.useState('');
   const [addressStr, setAddressStr] = React.useState('');
+  const [availabilities, setAvailabilities] = React.useState([]);
   const navigate = useNavigate();
 
   useEffect(async () => {
@@ -25,6 +27,7 @@ function Listing ({ listingId, isYourListing }) {
     setNumOfBaths(data.listing.metadata.numOfBaths);
     setNumOfBedrooms(data.listing.metadata.numOfBedrooms);
     setAmenities(data.listing.metadata.amenities);
+    setAvailabilities(data.listing.availability);
     const address = data.listing.address;
 
     let addressStrCompile = '';
@@ -51,7 +54,14 @@ function Listing ({ listingId, isYourListing }) {
           <ListGroupItem>Number of Bathrooms: {(numOfBaths !== undefined) ? <> {numOfBaths} </> : 'N/A'}</ListGroupItem>
           <ListGroupItem>Number of Bedrooms: {(numOfBedrooms !== undefined) ? <> {numOfBedrooms} </> : 'N/A'}</ListGroupItem>
           <ListGroupItem>Amenities: {(amenities !== undefined) ? <> {amenities} </> : 'N/A'}</ListGroupItem>
-          {isYourListing && <Button onClick={() => navigate(`/editlisting/${listingId}`)} variant="primary">Edit</Button>}
+            {isYourListing &&
+            <>
+              <Button onClick={() => navigate(`/editlisting/${listingId}`)} variant="primary">Edit</Button>
+              {availabilities.length === 0
+                ? <Button onClick={() => navigate(`/publishlisting/${listingId}`)} variant="primary">Publish</Button>
+                : <Button onClick={() => { unpublish(listingId, setAvailabilities) }} variant="primary">Unpublish</Button>}
+            </>
+            }
         </ListGroup>
       </Card>
     </>

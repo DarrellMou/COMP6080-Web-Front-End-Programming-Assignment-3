@@ -50,7 +50,7 @@ function EditListing () {
     setAmenities(data.listing.metadata.amenities);
   }, [])
 
-  const submitListing = async (e) => {
+  const confirmListing = async (e) => {
     e.preventDefault();
     try {
       const body = {
@@ -146,7 +146,7 @@ function EditListing () {
               />
           </FloatingLabel>
                 {(errorMsg === '') ? <></> : (<div className="error-message">{errorMsg}</div>)}
-          <Button variant='outlined' startIcon={<CreateIcon />} onClick={submitListing}>
+          <Button variant='outlined' startIcon={<CreateIcon />} onClick={confirmListing}>
             Confirm
           </Button>
           <Button variant='outlined' startIcon={<CancelIcon />} onClick={() => { navigate('/yourlistings') }}>
