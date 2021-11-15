@@ -18,7 +18,7 @@ function NavBar ({ setIsTokenEmpty }) {
       if (!res.ok) {
         console.log(res.statusText);
       } else {
-        localStorage.setItem('curToken', '');
+        localStorage.removeItem('curToken');
         setIsTokenEmpty(true);
         <Navigate to="/"/>
       }
