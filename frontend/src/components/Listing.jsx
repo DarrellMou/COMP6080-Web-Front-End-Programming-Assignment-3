@@ -39,7 +39,7 @@ function Listing ({ listing, isYourListing }) {
     (address.country !== undefined) && (addressStrCompile += address.country + ' ');
 
     setAddressStr(addressStrCompile);
-  }, [])
+  }, [listingId])
 
   return (
     <>

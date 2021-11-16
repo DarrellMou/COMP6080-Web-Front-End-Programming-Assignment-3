@@ -20,6 +20,7 @@ const Transition = React.forwardRef(function Transition (props, ref) {
 export function AllListings () {
   const [errorMsg, setErrorMsg] = React.useState('');
   const [listings, setListings] = React.useState([]);
+  const [allListings, setAllListings] = React.useState([]);
   const [locationSearch, setLocationSearch] = React.useState('');
   const [minBedroomSearch, setMinBedroomSearch] = React.useState('');
   const [maxBedroomSearch, setMaxBedroomSearch] = React.useState('');
@@ -39,61 +40,96 @@ export function AllListings () {
   };
 
   const filterListings = () => {
-    const lId = listings.map((l) => {
-      console.log(l.title);
+    const lId = allListings.map((l, idx) => {
       return l.id;
     });
     const promises = lId.map((id) => callFetch('GET', `/listings/${id}`, undefined, false, false));
     Promise.all(promises)
       .then((newListing) => {
-        const b = newListing.filter((l, idx) => {
+        const newList = newListing.filter((l, idx) => {
           const listing = l.listing;
           listing.id = lId[idx];
-          console.log(listing.title);
           if (locationSearch !== '') {
-            const pattern = new RegExp(locationSearch, 'i');
-            // console.log(listing);
-            if (!listing.title.match(pattern)) {
+            const titleLocations = locationSearch.split(' ');
+            const oldLength = titleLocations.length;
+            const filteredTL = titleLocations.filter((tl) => {
+              const pattern = new RegExp(tl, 'i');
+              if (listing.title.match(pattern)) {
+                return false;
+              }
+              if (listing.address.city && listing.address.city.match(pattern)) {
+                return false;
+              }
+              if (listing.address.state && listing.address.state.match(pattern)) {
+                return false;
+              }
+              if (listing.address.postcode && listing.address.postcode.match(pattern)) {
+                return false;
+              }
+              if (listing.address.country && listing.address.country.match(pattern)) {
+                return false;
+              }
+              if (listing.address.street && listing.address.street.match(pattern)) {
+                return false;
+              }
+              return true;
+            })
+            if (oldLength === filteredTL.length) {
+              return false;
+            }
+          }
+          if (minBedroomSearch !== '') {
+            if (listing.metadata.numOfBeds && minBedroomSearch > listing.metadata.numOfBeds) {
+              return false;
+            }
+          }
+          if (maxBedroomSearch !== '') {
+            if (listing.metadata.numOfBeds && maxBedroomSearch < listing.metadata.numOfBeds) {
+              return false;
+            }
+          }
+          if (startDateSearch !== '') {
+            const startDate = new Date(startDateSearch);
+            const oldLength = listing.availability.length;
+            const filteredA = listing.availability.filter((a) => new Date(a.start) < startDate)
+            if (oldLength === filteredA.length) {
+              return false;
+            }
+          }
+          if (endDateSearch !== '') {
+            const endDate = new Date(endDateSearch);
+            const oldLength = listing.availability.length;
+            const filteredA = listing.availability.filter((a) => new Date(a.end) > endDate)
+            if (oldLength === filteredA.length) {
+              return false;
+            }
+          }
+          if (minPrice !== '') {
+            if (parseInt(minPrice) > parseInt(listing.price)) {
+              return false;
+            }
+          }
+          if (maxPrice !== '') {
+            if (parseInt(maxPrice) < parseInt(listing.price)) {
               return false;
             }
           }
           return true;
         })
-        return b;
+        // const orderedNewList = newList.sort((a, b) => {
+        //   if (sort === 1) {
+        //     return -1;
+        //   }
+        //   if (sort === 2) {
+        //     return -1;
+        //   }
+        // })
+        return newList.map(l => l.listing);
       })
-      .then((newListing) => setListings(newListing));
-    // callFetch('GET', `/listings/${l.id}`, undefined, false, false);
-    // const a = new Promise((resolve) => {
-    //   const b = listings.filter(async (l) => {
-    //     console.log('a');
-    //     const data = await callFetch('GET', `/listings/${l.id}`, undefined, false, false);
-    //     console.log('b');
-    //     const listing = data.listing;
-    //     if (locationSearch !== '') {
-    //       const pattern = new RegExp(locationSearch, 'i');
-    //       // console.log(pattern);
-    //       if (!listing.title.match(pattern)) {
-    //         // console.log('in ' + listing.title);
-    //         return false;
-    //       }
-    //       // console.log('out ' + listing.title);
-    //     }
-    //     return true;
-    //   })
-    //   resolve(b);
-    // });
-    // a.then((newListing) => {
-    //   console.log('c');
-    //   console.log(newListing);
-    // });
-    // // setListings(newListing);
-    console.log(locationSearch);
-    console.log(minBedroomSearch);
-    console.log(maxBedroomSearch);
-    console.log(startDateSearch);
-    console.log(endDateSearch);
-    console.log(minPrice);
-    console.log(maxPrice);
+      .then((newListing) => {
+        setListings(newListing);
+        handleClose();
+      });
     console.log(sort);
   };
 
@@ -104,6 +140,7 @@ export function AllListings () {
       const listingsOrdered = [...data.listings].sort((a, b) => a.title.localeCompare(b.title)).sort((a, b) => {
         return (b.owner === ownerEmail) ? 1 : ((a.owner === ownerEmail) ? -1 : 1);
       });
+      setAllListings(listingsOrdered);
       setListings(listingsOrdered);
     } catch (error) {
       setErrorMsg(error);
@@ -117,9 +154,14 @@ export function AllListings () {
       : (
       <>
         <br />
-        <Button variant="outlined" onClick={handleClickOpen}>
-          Search Filter
-        </Button>
+        <row>
+          <Button variant="outlined" onClick={handleClickOpen}>
+            Search Filters
+          </Button>
+          <Button variant="outlined" onClick={() => setListings(allListings)}>
+            Clear Filters
+          </Button>
+        </row>
         <Dialog
           open={open}
           TransitionComponent={Transition}
@@ -131,8 +173,8 @@ export function AllListings () {
           <DialogContent>
             <Form>
               <Form.Group className="mb-3">
-                <Form.Label>Location</Form.Label>
-                <Form.Control onBlur={e => setLocationSearch(e.target.value)} type="text" placeholder="Castle on the moon" />
+                <Form.Label>Search</Form.Label>
+                <Form.Control onBlur={e => setLocationSearch(e.target.value)} type="text" placeholder="Title/Location" />
               </Form.Group>
               <Row className="mb-3">
                 <Form.Group as={Col}>
