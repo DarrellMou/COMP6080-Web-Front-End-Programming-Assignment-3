@@ -61,6 +61,7 @@ function EditListing () {
     Promise.all(promises)
       .then(async (imagesList) => {
         try {
+          console.log(imagesList);
           const body = {
             title: title,
             address: {
@@ -71,7 +72,6 @@ function EditListing () {
               country: country
             },
             price: price,
-            thumbnail: await getBase64(thumbnail),
             metadata: {
               propertyType: propertyType,
               numOfBathrooms: numOfBathrooms,
@@ -81,6 +81,8 @@ function EditListing () {
               images: imagesList
             }
           }
+          console.log(imagesList);
+          console.log(body);
           if (typeof thumbnail !== 'string') {
             const data = await getBase64(thumbnail);
             body.thumbnail = data;

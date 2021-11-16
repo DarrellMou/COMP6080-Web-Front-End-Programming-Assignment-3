@@ -32,6 +32,7 @@ export function AllListings () {
   const [maxPrice, setMaxPrice] = React.useState('');
   const [sort, setSort] = React.useState(1);
   const [open, setOpen] = React.useState(false);
+  const [showClearFilter, setShowClearFilter] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -132,6 +133,7 @@ export function AllListings () {
         setListings(newListing);
         handleClose();
       });
+    setShowClearFilter(true);
     console.log(sort);
   };
 
@@ -156,14 +158,17 @@ export function AllListings () {
       : (
       <>
         <br />
-        <Row>
+        <row>
           <Button variant="outlined" onClick={handleClickOpen}>
             Search Filters
           </Button>
-          <Button variant="outlined" onClick={() => setListings(allListings)}>
+          {showClearFilter && <Button variant="outlined" onClick={() => {
+            setListings(allListings);
+            setShowClearFilter(false);
+          }}>
             Clear Filters
-          </Button>
-        </Row>
+          </Button>}
+        </row>
         <Dialog
           open={open}
           TransitionComponent={Transition}
