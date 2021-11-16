@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { callFetch } from './Fetch'
-import Button from '@mui/material/Button';
-import { unpublish } from './UnpublishListing';
+// import Button from '@mui/material/Button';
+// import { unpublish } from './UnpublishListing';
 
-function Listing ({ listingId, isYourListing }) {
+function GeneralListing ({ listingId }) {
   const [title, setTitle] = React.useState('');
   const [price, setPrice] = React.useState('');
   const [thumbnail, setThumbNail] = React.useState('');
@@ -15,8 +15,7 @@ function Listing ({ listingId, isYourListing }) {
   const [numOfBedrooms, setNumOfBedrooms] = React.useState('');
   const [amenities, setAmenities] = React.useState('');
   const [addressStr, setAddressStr] = React.useState('');
-  const [availabilities, setAvailabilities] = React.useState([]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(async () => {
     const data = await callFetch('GET', `/listings/${listingId}`, undefined, false, false);
@@ -27,7 +26,6 @@ function Listing ({ listingId, isYourListing }) {
     setNumOfBaths(data.listing.metadata.numOfBaths);
     setNumOfBedrooms(data.listing.metadata.numOfBedrooms);
     setAmenities(data.listing.metadata.amenities);
-    setAvailabilities(data.listing.availability);
     const address = data.listing.address;
 
     let addressStrCompile = '';
@@ -54,23 +52,15 @@ function Listing ({ listingId, isYourListing }) {
           <ListGroupItem>Number of Bathrooms: {(numOfBaths !== undefined) ? <> {numOfBaths} </> : 'N/A'}</ListGroupItem>
           <ListGroupItem>Number of Bedrooms: {(numOfBedrooms !== undefined) ? <> {numOfBedrooms} </> : 'N/A'}</ListGroupItem>
           <ListGroupItem>Amenities: {(amenities !== undefined) ? <> {amenities} </> : 'N/A'}</ListGroupItem>
-            {isYourListing &&
-            <>
-              <Button onClick={() => navigate(`/listing/editlisting/${listingId}`)} variant="primary">Edit</Button>
-              {availabilities.length === 0
-                ? <Button onClick={() => navigate(`/listing/publishlisting/${listingId}`)} variant="primary">Publish</Button>
-                : <Button onClick={() => { unpublish(listingId, setAvailabilities) }} variant="primary">Unpublish</Button>}
-            </>
-            }
         </ListGroup>
       </Card>
     </>
   )
 }
 
-Listing.propTypes = {
+GeneralListing.propTypes = {
   listingId: PropTypes.number,
   isYourListing: PropTypes.bool,
 }
 
-export default Listing;
+export default GeneralListing;

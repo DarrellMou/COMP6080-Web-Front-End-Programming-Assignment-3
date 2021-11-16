@@ -34,7 +34,7 @@ function NavBar ({ setIsTokenEmpty }) {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="me-auto">
-          <Nav.Link as={Link} to="placeholder">:]</Nav.Link>
+          <Nav.Link as={Link} to="/placeholder">:]</Nav.Link>
         </Nav>
         <Nav>
           <NavDropdown title="Menu" id="collasible-nav-dropdown">
@@ -48,7 +48,7 @@ function NavBar ({ setIsTokenEmpty }) {
                 <NavDropdown.Item onClick={submitLogOut}>Logout</NavDropdown.Item>
               </>}
             {!(localStorage.getItem('curToken') === null) ? (<NavDropdown.Divider />) : <></>}
-            {!(localStorage.getItem('curToken') === null) ? (<NavDropdown.Item as={Link} to="/yourlistings">Your Listings</NavDropdown.Item>) : <></>}
+            {!(localStorage.getItem('curToken') === null) ? (<NavDropdown.Item as={Link} to="/listing/yourlistings">Your Listings</NavDropdown.Item>) : <></>}
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>
