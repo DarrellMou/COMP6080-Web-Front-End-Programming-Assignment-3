@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import { Nav, Container, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+// import Button from '@mui/material/Button';
+// import SearchIcon from '@mui/icons-material/Search';
+// import { red } from '@mui/material/colors';
 
 function NavBar ({ setIsTokenEmpty }) {
   const navigate = useNavigate();

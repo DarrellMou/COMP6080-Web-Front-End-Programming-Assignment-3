@@ -6,7 +6,8 @@ import { callFetch } from './Fetch'
 import Button from '@mui/material/Button';
 import { unpublish } from './UnpublishListing';
 
-function Listing ({ listingId, isYourListing }) {
+function Listing ({ listing, isYourListing }) {
+  const listingId = listing.id;
   const [title, setTitle] = React.useState('');
   const [price, setPrice] = React.useState('');
   const [thumbnail, setThumbNail] = React.useState('');
@@ -69,7 +70,7 @@ function Listing ({ listingId, isYourListing }) {
 }
 
 Listing.propTypes = {
-  listingId: PropTypes.number,
+  listing: PropTypes.object,
   isYourListing: PropTypes.bool,
 }
 

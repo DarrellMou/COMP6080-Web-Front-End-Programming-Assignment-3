@@ -7,6 +7,7 @@ import { AllListings, YourListings } from './components/Listings';
 import CreateListing from './components/CreateListing';
 import EditListing from './components/EditListing';
 import PublishListing from './components/PublishListing';
+// import Search from './components/Search';
 
 function App () {
   const [isTokenEmpty, setIsTokenEmpty] = React.useState(false);
@@ -27,6 +28,7 @@ function App () {
         <Route exact path="/createlisting" element={<CreateListing/>}/>
         <Route path="/editlisting/:id" element={<EditListing/>}/>
         <Route path="/publishlisting/:id" element={<PublishListing/>}/>
+        {/* <Route path="/search" element={<Search/>}/> */}
       </Routes>
     </Router>
   );
