@@ -52,6 +52,7 @@ function NavBar ({ setIsTokenEmpty }) {
               </>}
             {!(localStorage.getItem('curToken') === null) ? (<NavDropdown.Divider />) : <></>}
             {!(localStorage.getItem('curToken') === null) ? (<NavDropdown.Item as={Link} to="/listing/yourlistings">Your Listings</NavDropdown.Item>) : <></>}
+            <NavDropdown.Item as={Link} to='/test'>Test</NavDropdown.Item>
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>

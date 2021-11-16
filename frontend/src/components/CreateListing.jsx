@@ -8,6 +8,9 @@ import { callFetch } from './Fetch'
 
 const getBase64 = (file) => { // code obtained from https://www.codegrepper.com/code-examples/javascript/convert+input+image+to+base64+javascript
   return new Promise((resolve, reject) => {
+    if (typeof file === 'string') {
+      resolve('');
+    }
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
@@ -24,7 +27,7 @@ function CreateListing () {
   const [country, setCountry] = React.useState('');
   const [price, setPrice] = React.useState(0);
   const [thumbnail, setThumbnail] = React.useState('');
-  const [images, setImages] = React.useState([]);
+  const [images, setImages] = React.useState('');
   const [propertyType, setPropertyType] = React.useState('');
   const [numOfBathrooms, setNumOfBathrooms] = React.useState(0);
   const [numOfBedrooms, setNumOfBedrooms] = React.useState(0);
@@ -34,33 +37,43 @@ function CreateListing () {
   const navigate = useNavigate();
   const submitListing = async (e) => {
     e.preventDefault();
-    const imagesList = images.map(async (i) => await getBase64(i));
-    try {
-      const body = {
-        title: title,
-        address: {
-          street: street,
-          city: city,
-          state: state,
-          postcode: postcode,
-          country: country
-        },
-        price: price,
-        thumbnail: await getBase64(thumbnail),
-        metadata: {
-          propertyType: propertyType,
-          numOfBathrooms: numOfBathrooms,
-          numOfBedrooms: numOfBedrooms,
-          numOfBeds: numOfBeds,
-          amenities: amenities,
-          images: imagesList
+    // console.log(images);
+    // Array.from(images).forEach(i => console.log(i));
+    // console.log(thumbnail);
+    const promises = [];
+    Array.from(images).forEach(async (i) => promises.push(getBase64(i)));
+    console.log(promises);
+    Promise.all(promises)
+      .then(async (imagesList) => {
+        try {
+          const body = {
+            title: title,
+            address: {
+              street: street,
+              city: city,
+              state: state,
+              postcode: postcode,
+              country: country
+            },
+            price: price,
+            thumbnail: await getBase64(thumbnail),
+            metadata: {
+              propertyType: propertyType,
+              numOfBathrooms: numOfBathrooms,
+              numOfBedrooms: numOfBedrooms,
+              numOfBeds: numOfBeds,
+              amenities: amenities,
+              images: imagesList
+            }
+          }
+          console.log(body);
+          console.log(imagesList);
+          await callFetch('POST', '/listings/new', body, true, true);
+          navigate('/listing/yourlistings');
+        } catch (err) {
+          setErrorMsg(err);
         }
-      }
-      await callFetch('POST', '/listings/new', body, true, true);
-      navigate('/listing/yourlistings');
-    } catch (err) {
-      setErrorMsg(err);
-    }
+      })
   }
   return (
     <>

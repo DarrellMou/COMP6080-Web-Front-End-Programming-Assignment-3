@@ -156,14 +156,14 @@ export function AllListings () {
       : (
       <>
         <br />
-        <row>
+        <Row>
           <Button variant="outlined" onClick={handleClickOpen}>
             Search Filters
           </Button>
           <Button variant="outlined" onClick={() => setListings(allListings)}>
             Clear Filters
           </Button>
-        </row>
+        </Row>
         <Dialog
           open={open}
           TransitionComponent={Transition}

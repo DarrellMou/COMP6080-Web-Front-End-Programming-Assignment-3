@@ -1,6 +1,8 @@
 import React from 'react';
 import { callFetch } from './Fetch'
 import { useParams } from 'react-router-dom';
+import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
+import { Carousel } from 'react-responsive-carousel';
 
 function ViewListing () {
   const id = useParams().id;
@@ -11,7 +13,7 @@ function ViewListing () {
   const [numOfBathrooms, setNumOfBathrooms] = React.useState('');
   const [numOfBedrooms, setNumOfBedrooms] = React.useState('');
   const [numOfBeds, setNumOfBeds] = React.useState('');
-  const [images, setImages] = React.useState('');
+  const [images, setImages] = React.useState([]);
   const [reviews, setReviews] = React.useState('');
   const [amenities, setAmenities] = React.useState('');
   // const [errorMsg, setErrorMsg] = React.useState('');
@@ -30,12 +32,12 @@ function ViewListing () {
     (listing.address.country !== undefined) && (addressStrCompile += listing.address.country + ' ');
 
     setAddressStr(addressStrCompile);
-    console.log(addressStr);
     console.log(listing);
     setAmenities(listing.metadata.amenities);
     setPrice(listing.price);
 
     setImages(listing.metadata.images);
+    console.log(listing.metadata.images);
     setPropertyType(listing.metadata.propertyType);
     setReviews(listing.reviews);
     // Implement this
@@ -44,20 +46,40 @@ function ViewListing () {
     setNumOfBeds(listing.metadata.numOfBeds);
     setNumOfBathrooms(listing.metadata.numOfBathrooms);
   }, [])
+  console.log(images);
+  const imageList = !(images === '' || images === undefined) && images.map((image, idx) => {
+    return {
+      original: image,
+      thumbnail: image
+    }
+  })
+  console.log(imageList);
   return (
     <>
       <div>
-        <h1 className="title-text">{title}</h1>
+        <h1 className='title-text'>{title}</h1>
         <div>Address: {addressStr}</div>
         <div>Amenities: {amenities}</div>
         <div>Price: {price}</div>
-        <div>Images: {images}</div>
+        {/* <div>Images: {images}</div> */}
         <div>Property type: {propertyType}</div>
         <div>Reviews: {reviews}</div>
         <div>Review rating: </div>
         <div>Number of bedrooms: {numOfBedrooms}</div>
         <div>Number of beds: {numOfBeds}</div>
         <div>Number of bathrooms: {numOfBathrooms}</div>
+        {(images === '' || images === undefined)
+          ? <></>
+          : <Carousel width='50%'>
+            {images.map((image, idx) => {
+              return (
+                <div key={idx}>
+                  <img src={image} />
+                </div>
+              )
+            })}
+          </Carousel>
+        }
       </div>
     </>
   )
