@@ -39,32 +39,54 @@ export function AllListings () {
   };
 
   const filterListings = () => {
-    // const lId = listings.map((l) => l.id);
-    // callFetch('GET', `/listings/${l.id}`, undefined, false, false);
-    const a = new Promise((resolve) => {
-      const b = listings.filter(async (l) => {
-        console.log('a');
-        const data = await callFetch('GET', `/listings/${l.id}`, undefined, false, false);
-        console.log('b');
-        const listing = data.listing;
-        if (locationSearch !== '') {
-          const pattern = new RegExp(locationSearch, 'i');
-          // console.log(pattern);
-          if (!listing.title.match(pattern)) {
-            // console.log('in ' + listing.title);
-            return false;
+    const lId = listings.map((l) => {
+      console.log(l.title);
+      return l.id;
+    });
+    const promises = lId.map((id) => callFetch('GET', `/listings/${id}`, undefined, false, false));
+    Promise.all(promises)
+      .then((newListing) => {
+        const b = newListing.filter((l, idx) => {
+          const listing = l.listing;
+          listing.id = lId[idx];
+          console.log(listing.title);
+          if (locationSearch !== '') {
+            const pattern = new RegExp(locationSearch, 'i');
+            // console.log(listing);
+            if (!listing.title.match(pattern)) {
+              return false;
+            }
           }
-          // console.log('out ' + listing.title);
-        }
-        return true;
+          return true;
+        })
+        return b;
       })
-      resolve(b);
-    });
-    a.then((newListing) => {
-      console.log('c');
-      console.log(newListing);
-    });
-    // setListings(newListing);
+      .then((newListing) => setListings(newListing));
+    // callFetch('GET', `/listings/${l.id}`, undefined, false, false);
+    // const a = new Promise((resolve) => {
+    //   const b = listings.filter(async (l) => {
+    //     console.log('a');
+    //     const data = await callFetch('GET', `/listings/${l.id}`, undefined, false, false);
+    //     console.log('b');
+    //     const listing = data.listing;
+    //     if (locationSearch !== '') {
+    //       const pattern = new RegExp(locationSearch, 'i');
+    //       // console.log(pattern);
+    //       if (!listing.title.match(pattern)) {
+    //         // console.log('in ' + listing.title);
+    //         return false;
+    //       }
+    //       // console.log('out ' + listing.title);
+    //     }
+    //     return true;
+    //   })
+    //   resolve(b);
+    // });
+    // a.then((newListing) => {
+    //   console.log('c');
+    //   console.log(newListing);
+    // });
+    // // setListings(newListing);
     console.log(locationSearch);
     console.log(minBedroomSearch);
     console.log(maxBedroomSearch);
@@ -129,9 +151,6 @@ export function AllListings () {
                     id="date"
                     type="date"
                     onBlur={e => setStartDateSearch(e.target.value)}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                   />
                 </Form.Group>
                 <Form.Group as={Col}>
@@ -140,9 +159,6 @@ export function AllListings () {
                     id="date"
                     type="date"
                     onBlur={e => setEndDateSearch(e.target.value)}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                   />
                 </Form.Group>
               </Row>
