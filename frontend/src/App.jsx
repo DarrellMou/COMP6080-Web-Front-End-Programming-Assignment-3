@@ -23,10 +23,10 @@ function App () {
         <Route path="/" element={<AllListings />}/>
         <Route exact path="/login" element={<Login setIsTokenEmpty={setIsTokenEmpty} />}/>
         <Route exact path="/register" element={<Register setIsTokenEmpty={setIsTokenEmpty} />}/>
-        <Route exact path="/yourlistings" element={<YourListings/>}/>
-        <Route exact path="/createlisting" element={<CreateListing/>}/>
-        <Route path="/editlisting/:id" element={<EditListing/>}/>
-        <Route path="/publishlisting/:id" element={<PublishListing/>}/>
+        <Route exact path="/listing/yourlistings" element={<YourListings/>}/>
+        <Route exact path="listing/createlisting" element={<CreateListing/>}/>
+        <Route path="listing/editlisting/:id" element={<EditListing/>}/>
+        <Route path="listing/publishlisting/:id" element={<PublishListing/>}/>
       </Routes>
     </Router>
   );
