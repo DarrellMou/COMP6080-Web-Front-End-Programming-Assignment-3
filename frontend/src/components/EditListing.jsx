@@ -25,10 +25,12 @@ function EditListing () {
   const [postcode, setPostcode] = React.useState('');
   const [country, setCountry] = React.useState('');
   const [price, setPrice] = React.useState('');
+  const [images, setImages] = React.useState('');
   const [thumbnail, setThumbnail] = React.useState('');
   const [propertyType, setPropertyType] = React.useState('');
-  const [numOfBaths, setNumOfBaths] = React.useState('');
+  const [numOfBathrooms, setNumOfBathrooms] = React.useState('');
   const [numOfBedrooms, setNumOfBedrooms] = React.useState('');
+  const [numOfBeds, setNumOfBeds] = React.useState('');
   const [amenities, setAmenities] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
   const navigate = useNavigate();
@@ -43,43 +45,54 @@ function EditListing () {
     setCountry(data.listing.address.country);
     setPrice(data.listing.price);
     setThumbnail(data.listing.thumbnail);
+    setImages(data.listing.metadata.images);
     setPropertyType(data.listing.metadata.propertyType);
-    setNumOfBaths(data.listing.metadata.numOfBaths);
+    setNumOfBathrooms(data.listing.metadata.numOfBathrooms);
     setNumOfBedrooms(data.listing.metadata.numOfBedrooms);
+    setNumOfBeds(data.listing.metadata.numOfBeds);
     setAmenities(data.listing.metadata.amenities);
   }, [])
 
   const confirmListing = async (e) => {
     e.preventDefault();
-    try {
-      const body = {
-        title: title,
-        address: {
-          street: street,
-          city: city,
-          state: state,
-          postcode: postcode,
-          country: country
-        },
-        price: price,
-        metadata: {
-          propertyType: propertyType,
-          numOfBaths: numOfBaths,
-          numOfBedrooms: numOfBedrooms,
-          amenities: amenities
+    const promises = [];
+    Array.from(images).forEach(async (i) => promises.push(getBase64(i)));
+    console.log(promises);
+    Promise.all(promises)
+      .then(async (imagesList) => {
+        try {
+          const body = {
+            title: title,
+            address: {
+              street: street,
+              city: city,
+              state: state,
+              postcode: postcode,
+              country: country
+            },
+            price: price,
+            thumbnail: await getBase64(thumbnail),
+            metadata: {
+              propertyType: propertyType,
+              numOfBathrooms: numOfBathrooms,
+              numOfBedrooms: numOfBedrooms,
+              numOfBeds: numOfBeds,
+              amenities: amenities,
+              images: imagesList
+            }
+          }
+          if (typeof thumbnail !== 'string') {
+            const data = await getBase64(thumbnail);
+            body.thumbnail = data;
+          } else {
+            body.thumbnail = thumbnail;
+          }
+          await callFetch('PUT', `/listings/${id}`, body, true, true);
+          navigate('/listing/yourlistings');
+        } catch (err) {
+          setErrorMsg(err);
         }
-      };
-      if (typeof thumbnail !== 'string') {
-        const data = await getBase64(thumbnail);
-        body.thumbnail = data;
-      } else {
-        body.thumbnail = thumbnail;
-      }
-      await callFetch('PUT', `/listings/${id}`, body, true, true);
-      navigate('/listing/yourlistings');
-    } catch (err) {
-      setErrorMsg(err);
-    }
+      })
   }
 
   return (
@@ -121,6 +134,10 @@ function EditListing () {
               <Form.Label>Thumbnail</Form.Label>
               <Form.Control onChange={e => setThumbnail(e.target.files[0])} type="file" />
             </Form.Group>
+            <Form.Group controlId="formFileImages" className="mb-3">
+              <Form.Label>Images</Form.Label>
+              <Form.Control onChange={e => setImages(e.target.files)} type="file" multiple />
+            </Form.Group>
             <Row className="mb-3">
               <Form.Group as={Col} controlId="formGridPropertyType">
                 <Form.Label>Property Type</Form.Label>
@@ -128,7 +145,7 @@ function EditListing () {
               </Form.Group>
               <Form.Group as={Col} controlId="formGridNumOfBaths">
                 <Form.Label>Number of bathrooms</Form.Label>
-                <Form.Control defaultValue={numOfBaths} onBlur={e => setNumOfBaths(e.target.value)} type="text" />
+                <Form.Control defaultValue={numOfBathrooms} onBlur={e => setNumOfBathrooms(e.target.value)} type="text" />
               </Form.Group>
               <Form.Group as={Col} controlId="formGridNumOfBedrooms">
                 <Form.Label>Number of bedrooms</Form.Label>
