@@ -24,14 +24,17 @@ function CreateListing () {
   const [country, setCountry] = React.useState('');
   const [price, setPrice] = React.useState(0);
   const [thumbnail, setThumbnail] = React.useState('');
+  const [images, setImages] = React.useState([]);
   const [propertyType, setPropertyType] = React.useState('');
   const [numOfBathrooms, setNumOfBathrooms] = React.useState(0);
   const [numOfBedrooms, setNumOfBedrooms] = React.useState(0);
+  const [numOfBeds, setNumOfBeds] = React.useState(0);
   const [amenities, setAmenities] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
   const navigate = useNavigate();
   const submitListing = async (e) => {
     e.preventDefault();
+    const imagesList = images.map(async (i) => await getBase64(i));
     try {
       const body = {
         title: title,
@@ -48,7 +51,9 @@ function CreateListing () {
           propertyType: propertyType,
           numOfBathrooms: numOfBathrooms,
           numOfBedrooms: numOfBedrooms,
-          amenities: amenities
+          numOfBeds: numOfBeds,
+          amenities: amenities,
+          images: imagesList
         }
       }
       await callFetch('POST', '/listings/new', body, true, true);
@@ -92,9 +97,13 @@ function CreateListing () {
               <Form.Label>Price</Form.Label>
               <Form.Control onBlur={e => setPrice(e.target.value)} type="text" placeholder="Enter price" />
             </Form.Group>
-            <Form.Group controlId="formFile" className="mb-3">
+            <Form.Group controlId="formFileThumbnail" className="mb-3">
               <Form.Label>Thumbnail</Form.Label>
               <Form.Control onChange={e => setThumbnail(e.target.files[0])} type="file" />
+            </Form.Group>
+            <Form.Group controlId="formFileImages" className="mb-3">
+              <Form.Label>Images</Form.Label>
+              <Form.Control onChange={e => setImages(e.target.files)} type="file" multiple />
             </Form.Group>
             <Row className="mb-3">
               <Form.Group as={Col} controlId="formGridPropertyType">
@@ -108,6 +117,10 @@ function CreateListing () {
               <Form.Group as={Col} controlId="formGridNumOfBedrooms">
                 <Form.Label>Number of bedrooms</Form.Label>
                 <Form.Control onBlur={e => setNumOfBedrooms(e.target.value)} type="text" />
+              </Form.Group>
+              <Form.Group as={Col} controlId="formGridNumOfBeds">
+                <Form.Label>Number of beds</Form.Label>
+                <Form.Control onBlur={e => setNumOfBeds(e.target.value)} type="text" />
               </Form.Group>
             </Row>
             <FloatingLabel controlId="floatingTextarea" label="Amenities">
