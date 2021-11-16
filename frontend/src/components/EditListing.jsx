@@ -77,7 +77,7 @@ function EditListing () {
         body.thumbnail = thumbnail;
       }
       await callFetch('PUT', `/listings/${id}`, body, true, true);
-      navigate('/yourlistings');
+      navigate('/listing/yourlistings');
     } catch (err) {
       setErrorMsg(err);
     }
@@ -149,7 +149,7 @@ function EditListing () {
           <Button variant='outlined' startIcon={<CreateIcon />} onClick={confirmListing}>
             Confirm
           </Button>
-          <Button variant='outlined' startIcon={<CancelIcon />} onClick={() => { navigate('/yourlistings') }}>
+          <Button variant='outlined' startIcon={<CancelIcon />} onClick={() => { navigate('/listing/yourlistings') }}>
             Cancel
           </Button>
           </Form>)

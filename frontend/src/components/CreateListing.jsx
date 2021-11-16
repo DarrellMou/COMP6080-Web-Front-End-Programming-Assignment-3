@@ -52,7 +52,7 @@ function CreateListing () {
         }
       }
       await callFetch('POST', '/listings/new', body, true, true);
-      navigate('/yourlistings');
+      navigate('/listing/yourlistings');
     } catch (err) {
       setErrorMsg(err);
     }

@@ -219,7 +219,7 @@ export function YourListings () {
         )}
     <br />
     <br />
-    <Button variant='outlined' startIcon={<CreateIcon />} onClick={() => { navigate('/createlisting') }}>
+    <Button variant='outlined' startIcon={<CreateIcon />} onClick={() => { navigate('/listing/createlisting') }}>
       Create
     </Button>
   </>)

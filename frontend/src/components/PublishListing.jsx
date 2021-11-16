@@ -23,7 +23,7 @@ function PublishListing () {
         availability: availabilities
       };
       await callFetch('PUT', `/listings/publish/${id}`, body, true, true);
-      navigate('/yourlistings');
+      navigate('/listing/yourlistings');
     } catch (err) {
       setErrorMsg(err);
     }
@@ -79,7 +79,7 @@ function PublishListing () {
       <Button variant='outlined' startIcon={<AddIcon />} onClick={ publish }>
         Publish
       </Button>
-      <Button variant='outlined' startIcon={<CancelIcon />} onClick={() => { navigate('/yourlistings') }}>
+      <Button variant='outlined' startIcon={<CancelIcon />} onClick={() => { navigate('/listing/yourlistings') }}>
         Cancel
       </Button>
     </>
