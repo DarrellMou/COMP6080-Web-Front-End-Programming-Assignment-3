@@ -151,6 +151,10 @@ function EditListing () {
                 <Form.Label>Number of bedrooms</Form.Label>
                 <Form.Control defaultValue={numOfBedrooms} onBlur={e => setNumOfBedrooms(e.target.value)} type="text" />
               </Form.Group>
+              <Form.Group as={Col} controlId="formGridNumOfBeds">
+                <Form.Label>Number of beds</Form.Label>
+                <Form.Control onBlur={e => setNumOfBeds(e.target.value)} type="text" />
+              </Form.Group>
             </Row>
             <FloatingLabel controlId="floatingTextarea" label="Amenities">
               <Form.Control

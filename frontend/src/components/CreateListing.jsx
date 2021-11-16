@@ -37,9 +37,6 @@ function CreateListing () {
   const navigate = useNavigate();
   const submitListing = async (e) => {
     e.preventDefault();
-    // console.log(images);
-    // Array.from(images).forEach(i => console.log(i));
-    // console.log(thumbnail);
     const promises = [];
     Array.from(images).forEach(async (i) => promises.push(getBase64(i)));
     console.log(promises);
@@ -66,8 +63,6 @@ function CreateListing () {
               images: imagesList
             }
           }
-          console.log(body);
-          console.log(imagesList);
           await callFetch('POST', '/listings/new', body, true, true);
           navigate('/listing/yourlistings');
         } catch (err) {
