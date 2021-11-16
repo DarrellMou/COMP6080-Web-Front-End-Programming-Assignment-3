@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap';
-// import { useNavigate } from 'react-router-dom';
+import { CardActionArea } from '@mui/material';
 import { callFetch } from './Fetch'
-// import Button from '@mui/material/Button';
-// import { unpublish } from './UnpublishListing';
+import { useNavigate } from 'react-router-dom';
 
-function GeneralListing ({ listingId }) {
+function GeneralListing ({ listing }) {
+  const listingId = listing.id;
   const [title, setTitle] = React.useState('');
   const [price, setPrice] = React.useState('');
   const [thumbnail, setThumbNail] = React.useState('');
@@ -15,7 +15,7 @@ function GeneralListing ({ listingId }) {
   const [numOfBedrooms, setNumOfBedrooms] = React.useState('');
   const [amenities, setAmenities] = React.useState('');
   const [addressStr, setAddressStr] = React.useState('');
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(async () => {
     const data = await callFetch('GET', `/listings/${listingId}`, undefined, false, false);
@@ -36,31 +36,32 @@ function GeneralListing ({ listingId }) {
     (address.country !== undefined) && (addressStrCompile += address.country + ' ');
 
     setAddressStr(addressStrCompile);
-  }, [])
+  }, [listingId])
 
   return (
     <>
-      <Card style={{ width: '18rem' }}>
-        <Card.Img variant="top" src={thumbnail} />
-        <Card.Body>
-          <Card.Title>{title}</Card.Title>
-        </Card.Body>
-        <ListGroup className="list-group-flush">
-          <ListGroupItem>Address: {(addressStr !== '') ? <> {addressStr} </> : 'N/A'}</ListGroupItem>
-          <ListGroupItem>${price} per night</ListGroupItem>
-          <ListGroupItem>Property Type: {(propertyType !== undefined) ? <> {propertyType} </> : 'N/A'}</ListGroupItem>
-          <ListGroupItem>Number of Bathrooms: {(numOfBaths !== undefined) ? <> {numOfBaths} </> : 'N/A'}</ListGroupItem>
-          <ListGroupItem>Number of Bedrooms: {(numOfBedrooms !== undefined) ? <> {numOfBedrooms} </> : 'N/A'}</ListGroupItem>
-          <ListGroupItem>Amenities: {(amenities !== undefined) ? <> {amenities} </> : 'N/A'}</ListGroupItem>
-        </ListGroup>
+      <Card style={{ width: '18rem' }} onClick={() => navigate(`/listing/viewlisting/${listing.id}`)}>
+        <CardActionArea>
+          <Card.Img variant="top" src={thumbnail} />
+          <Card.Body>
+            <Card.Title>{title}</Card.Title>
+          </Card.Body>
+          <ListGroup className="list-group-flush">
+            <ListGroupItem>Address: {(addressStr !== '') ? <> {addressStr} </> : 'N/A'}</ListGroupItem>
+            <ListGroupItem>${price} per night</ListGroupItem>
+            <ListGroupItem>Property Type: {(propertyType !== undefined) ? <> {propertyType} </> : 'N/A'}</ListGroupItem>
+            <ListGroupItem>Number of Bathrooms: {(numOfBaths !== undefined) ? <> {numOfBaths} </> : 'N/A'}</ListGroupItem>
+            <ListGroupItem>Number of Bedrooms: {(numOfBedrooms !== undefined) ? <> {numOfBedrooms} </> : 'N/A'}</ListGroupItem>
+            <ListGroupItem>Amenities: {(amenities !== undefined) ? <> {amenities} </> : 'N/A'}</ListGroupItem>
+          </ListGroup>
+        </CardActionArea>
       </Card>
     </>
   )
 }
 
 GeneralListing.propTypes = {
-  listingId: PropTypes.number,
-  isYourListing: PropTypes.bool,
+  listing: PropTypes.object,
 }
 
 export default GeneralListing;

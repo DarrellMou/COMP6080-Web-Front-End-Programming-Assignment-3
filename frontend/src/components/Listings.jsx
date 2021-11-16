@@ -2,7 +2,7 @@ import React from 'react';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import CreateIcon from '@mui/icons-material/Create';
-import Listing from './Listing';
+// import Listing from './Listing';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -11,6 +11,8 @@ import Slide from '@mui/material/Slide';
 import { callFetch } from './Fetch'
 import { useNavigate } from 'react-router-dom';
 import { Form, Row, Col } from 'react-bootstrap';
+import YourListing from './YourListing';
+import GeneralListing from './GeneralListing';
 // import TextField from '@mui/material/TextField';
 
 const Transition = React.forwardRef(function Transition (props, ref) {
@@ -233,7 +235,7 @@ export function AllListings () {
           {listings.map((l, idx) => {
             return (
               <Grid item xs={3} key={idx}>
-                <Listing listing={l} isYourListing={false} />
+                <GeneralListing listing={l} />
               </Grid>
             )
           })}
@@ -269,7 +271,7 @@ export function YourListings () {
         {listings.map((l, idx) => {
           return (
             <Grid item xs={3} key={idx}>
-              <Listing listing={l} isYourListing={true} />
+              <YourListing listing={l} />
             </Grid>
           )
         })}

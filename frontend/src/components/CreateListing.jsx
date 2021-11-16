@@ -25,7 +25,7 @@ function CreateListing () {
   const [price, setPrice] = React.useState(0);
   const [thumbnail, setThumbnail] = React.useState('');
   const [propertyType, setPropertyType] = React.useState('');
-  const [numOfBaths, setNumOfBaths] = React.useState(0);
+  const [numOfBathrooms, setNumOfBathrooms] = React.useState(0);
   const [numOfBedrooms, setNumOfBedrooms] = React.useState(0);
   const [amenities, setAmenities] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
@@ -46,7 +46,7 @@ function CreateListing () {
         thumbnail: await getBase64(thumbnail),
         metadata: {
           propertyType: propertyType,
-          numOfBaths: numOfBaths,
+          numOfBathrooms: numOfBathrooms,
           numOfBedrooms: numOfBedrooms,
           amenities: amenities
         }
@@ -103,7 +103,7 @@ function CreateListing () {
               </Form.Group>
               <Form.Group as={Col} controlId="formGridNumOfBaths">
                 <Form.Label>Number of bathrooms</Form.Label>
-                <Form.Control onBlur={e => setNumOfBaths(e.target.value)} type="text" />
+                <Form.Control onBlur={e => setNumOfBathrooms(e.target.value)} type="text" />
               </Form.Group>
               <Form.Group as={Col} controlId="formGridNumOfBedrooms">
                 <Form.Label>Number of bedrooms</Form.Label>
