@@ -8,8 +8,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
-import DialogContentText from '@mui/material/DialogContentText';
+// import DialogContentText from '@mui/material/DialogContentText';
 import TextField from '@mui/material/TextField';
+import Ratings from 'react-ratings-declarative';
+import { FloatingLabel, Form } from 'react-bootstrap'
 
 function ViewListing () {
   const id = useParams().id;
@@ -21,17 +23,26 @@ function ViewListing () {
   const [numOfBedrooms, setNumOfBedrooms] = React.useState('');
   const [numOfBeds, setNumOfBeds] = React.useState('');
   const [images, setImages] = React.useState([]);
+  const [availability, setAvailability] = React.useState([]);
   const [reviews, setReviews] = React.useState('');
   const [amenities, setAmenities] = React.useState('');
   const [bookings, setBookings] = React.useState([]);
   const [createdBookings, setCreatedBookings] = React.useState({});
   const [openMakeBooking, setOpenMakeBooking] = React.useState(false);
-  const [openViewBookings, setOpenViewBookings] = React.useState(false);
+  const [openAddReview, setOpenAddReview] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState('');
   const [bookingPrice, setBookingPrice] = React.useState('');
   const [showBookingPrice, setShowBookingPrice] = React.useState(false);
+  const [reviewBookingId, setReviewBookingId] = React.useState(-1);
+  const [reviewText, setReviewText] = React.useState('');
+  const [reviewRating, setReviewRating] = React.useState(5);
   // const [errorMsg, setErrorMsg] = React.useState('');
   // const navigate = useNavigate();
+
+  const changeRating = (rating) => {
+    setReviewRating(rating);
+    console.log(reviewRating);
+  }
 
   const handleClickOpenMakeBooking = () => {
     setOpenMakeBooking(true);
@@ -41,18 +52,32 @@ function ViewListing () {
     setOpenMakeBooking(false);
   };
 
-  const handleClickOpenViewBookings = () => {
-    setOpenViewBookings(true);
+  const handleClickOpenAddReview = () => {
+    setOpenAddReview(true);
   };
 
-  const handleCloseViewBookings = () => {
-    setOpenViewBookings(false);
+  const handleCloseAddReview = () => {
+    setOpenAddReview(false);
   };
 
   React.useEffect(async () => {
     const data = await callFetch('GET', `/listings/${id}`, undefined, false, false);
     const listing = data.listing;
     setTitle(listing.title);
+
+    if (localStorage.getItem('curToken') !== null) {
+      const ownerEmail = localStorage.getItem('curEmail');
+      const bookingsData = await callFetch('GET', '/bookings', undefined, false, true);
+      const ownerBookings = bookingsData.bookings.filter((b) => {
+        if (b.owner === ownerEmail) {
+          return true;
+        }
+        return false;
+      })
+      const curListingOwnerBookings = ownerBookings.filter(b => parseInt(b.listingId) === parseInt(id));
+      setBookings(curListingOwnerBookings);
+      console.log(curListingOwnerBookings);
+    }
 
     let addressStrCompile = '';
     (listing.address.street !== undefined) && (addressStrCompile += listing.address.street + ' ');
@@ -70,19 +95,12 @@ function ViewListing () {
     console.log(listing.metadata.images);
     setPropertyType(listing.metadata.propertyType);
     setReviews(listing.reviews);
+    setAvailability(listing.availability);
     // Implement this
     // TO-DO: setReviewRating();
     setNumOfBedrooms(listing.metadata.numOfBedrooms);
     setNumOfBeds(listing.metadata.numOfBeds);
     setNumOfBathrooms(listing.metadata.numOfBathrooms);
-  }, [])
-
-  React.useEffect(async () => {
-    if (localStorage.getItem('curToken') !== null) {
-      const bookingsData = await callFetch('GET', '/bookings', undefined, false, true);
-      console.log(bookingsData.bookings);
-      setBookings(bookingsData.bookings);
-    }
   }, [])
 
   const addBooking = (date, from) => {
@@ -102,12 +120,29 @@ function ViewListing () {
     } else {
       const startDate = new Date(createdBookings.start);
       const endDate = new Date(createdBookings.end);
-      const dateDiff = endDate.getTime() - startDate.getTime();
-      const daysDiff = Math.round(dateDiff / (1000 * 3600 * 24));
-      const bookingPrice = daysDiff * price;
-      setBookingPrice(bookingPrice);
-      setErrorMsg('');
-      setShowBookingPrice(true);
+
+      const filteredAvail = availability.filter((a) => {
+        const startDateAvailability = new Date(a.start);
+        const endDateAvailability = new Date(a.end);
+        if (startDateAvailability > startDate) {
+          return false;
+        }
+        if (endDateAvailability < endDate) {
+          return false;
+        }
+        return true;
+      })
+
+      if (filteredAvail.length === 0) {
+        setErrorMsg('Please enter a date range in between availabilities.');
+      } else {
+        const dateDiff = endDate.getTime() - startDate.getTime();
+        const daysDiff = Math.round(dateDiff / (1000 * 3600 * 24));
+        const bookingPrice = daysDiff * price;
+        setBookingPrice(bookingPrice);
+        setErrorMsg('');
+        setShowBookingPrice(true);
+      }
     }
   }
 
@@ -121,8 +156,11 @@ function ViewListing () {
         },
         totalPrice: bookingPrice
       }
-      console.log(body);
       await callFetch('POST', `/bookings/new/${id}`, body, true, true);
+      const oldBookings = bookings;
+      // add to bookings to avoid fetching the bookings again
+      body.status = 'pending';
+      setBookings([...oldBookings, body]);
       clearCreatedBooking();
     } catch (err) {
       setErrorMsg(err);
@@ -136,14 +174,20 @@ function ViewListing () {
     setOpenMakeBooking(false);
   }
 
-  // console.log(images);
-  // const imageList = !(images === '' || images === undefined) && images.map((image, idx) => {
-  //   return {
-  //     original: image,
-  //     thumbnail: image
-  //   }
-  // })
-  // console.log(imageList);
+  const submitReview = async () => {
+    try {
+      const body = {
+        review: {
+          rating: reviewRating,
+          comment: reviewText
+        }
+      }
+      await callFetch('PUT', `/listings/${id}/review/${reviewBookingId}`, body, true, true);
+    } catch (error) {
+      setErrorMsg(error);
+    }
+  }
+
   return (
     <>
       <div>
@@ -170,16 +214,49 @@ function ViewListing () {
         <div>Number of bedrooms: {numOfBedrooms}</div>
         <div>Number of beds: {numOfBeds}</div>
         <div>Number of bathrooms: {numOfBathrooms}</div>
+        <div>Availabilties:
+          <ul>
+          {availability.map((a, idx) => {
+            return (
+              <li key={idx}>
+                {new Date(a.start).toLocaleDateString()} to {new Date(a.end).toLocaleDateString()}
+              </li>
+            )
+          })}
+          </ul>
+        </div>
         { (localStorage.getItem('curToken') !== null) &&
           <>
+          {(bookings.length !== 0) &&
+            <>
+            <div>Current Bookings:
+            <ul>
+              {bookings.map((a, idx) => {
+                return (
+                  <li key={idx}>Booking from {new Date(a.dateRange.start).toLocaleDateString()} to {new Date(a.dateRange.end).toLocaleDateString()}: {a.status}</li>
+                )
+              })}
+            </ul></div>
+            </>
+            }
           <Button variant='outlined' onClick={handleClickOpenMakeBooking}>
             Make Bookings
           </Button>
           <Dialog open={openMakeBooking} onClose={handleCloseMakeBooking}>
             <DialogTitle>Make Bookings</DialogTitle>
             <DialogContent>
+              <div>Availabilties:
+                <ul>
+                {availability.map((a, idx) => {
+                  return (
+                    <li key={idx}>
+                      {new Date(a.start).toLocaleDateString()} to {new Date(a.end).toLocaleDateString()}
+                    </li>
+                  )
+                })}
+                </ul>
+              </div>
               <br />
-              {/* If email is not empty, only provide listings that belongs to the email */}
               <TextField
                 id='date'
                 label='Start'
@@ -213,31 +290,51 @@ function ViewListing () {
               <Button onClick={clearCreatedBooking}>Cancel</Button>
             </DialogActions>
           </Dialog>
-          {bookings.length !== 0 &&
+          {bookings.some(b => b.status === 'accepted') &&
             <>
-              <Button variant='outlined' onClick={handleClickOpenViewBookings}>
-                View Bookings
+              <Button variant='outlined' onClick={handleClickOpenAddReview}>
+                Leave a Review!
               </Button>
-              <Dialog open={openViewBookings} onClose={handleCloseViewBookings}>
-                <DialogTitle>Make Bookings</DialogTitle>
+              <Dialog open={openAddReview} onClose={handleCloseAddReview}>
+                <DialogTitle>Review</DialogTitle>
                 <DialogContent>
-                  <DialogContentText>
-                    To subscribe to this website, please enter your email address here. We
-                    will send updates occasionally.
-                  </DialogContentText>
-                  <TextField
-                    autoFocus
-                    margin='dense'
-                    id='name'
-                    label='Email Address'
-                    type='email'
-                    fullWidth
-                    variant='standard'
-                  />
+                  <FloatingLabel controlId="floatingSelectGrid" label="Works with selects">
+                    <Form.Select onChange={(e) => setReviewBookingId(e.target.value)} aria-label="Booking">
+                      <option>Select a booking</option>
+                      {bookings.filter((b) => b.status === 'accepted').map((b, idx) => {
+                        return (
+                          <option key={idx} value={b.id}>Booking from {b.dateRange.start} to {b.dateRange.end}</option>
+                        )
+                      })}
+                    </Form.Select>
+                  </FloatingLabel>
+                  <Ratings
+                    rating={reviewRating}
+                    widgetDimensions="40px"
+                    widgetSpacings="15px"
+                    widgetHoverColors="blue"
+                    widgetRatedColors="red"
+                    changeRating={changeRating}
+                  >
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                  </Ratings>
+                  <br />
+                  <br />
+                  <FloatingLabel controlId="floatingTextarea2" label="Comments">
+                    <Form.Control
+                      as="textarea"
+                      style={{ width: '400px', height: '200px' }}
+                      onBlur={e => setReviewText(e.target.value)}
+                    />
+                  </FloatingLabel>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={handleCloseViewBookings}>Cancel</Button>
-                  <Button onClick={handleCloseViewBookings}>Subscribe</Button>
+                  <Button onClick={submitReview}>Submit</Button>
+                  <Button onClick={handleCloseAddReview}>Cancel</Button>
                 </DialogActions>
               </Dialog>
             </>

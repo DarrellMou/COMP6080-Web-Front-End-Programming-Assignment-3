@@ -13,14 +13,14 @@ import Grid from '@mui/material/Grid';
 
 function PublishListing () {
   const id = useParams().id;
-  const [availabilities, setAvailabilities] = React.useState([{}]);
+  const [availability, setAvailability] = React.useState([{}]);
   const [errorMsg, setErrorMsg] = React.useState('');
   const navigate = useNavigate();
 
   const publish = async () => {
     try {
       const body = {
-        availability: availabilities
+        availability: availability
       };
       await callFetch('PUT', `/listings/publish/${id}`, body, true, true);
       navigate('/listing/yourlistings');
@@ -30,10 +30,10 @@ function PublishListing () {
   }
 
   const addAvailability = (date, idx, from) => {
-    const newAvailabilities = [...availabilities];
-    newAvailabilities[idx][from] = date;
-    setAvailabilities(newAvailabilities);
-    console.log(availabilities);
+    const newAvailability = [...availability];
+    newAvailability[idx][from] = date;
+    setAvailability(newAvailability);
+    console.log(availability);
   }
   return (
     <>
@@ -42,7 +42,7 @@ function PublishListing () {
       <br />
       <Grid container spacing={2}>
         {/* If email is not empty, only provide listings that belongs to the email */}
-        {availabilities.map((a, idx) => {
+        {availability.map((a, idx) => {
           return (
             <Grid item xs={2} key={idx}>
               <Stack component="form" noValidate spacing={3}>
@@ -73,7 +73,7 @@ function PublishListing () {
       </Grid>
       <br />
       {(errorMsg === '') ? <></> : (<div className="error-message">{errorMsg}</div>)}
-      <Button variant='outlined' startIcon={<AddIcon />} onClick={() => setAvailabilities([...availabilities, {}])}>
+      <Button variant='outlined' startIcon={<AddIcon />} onClick={() => setAvailability([...availability, {}])}>
         Add More Bookings
       </Button>
       <Button variant='outlined' startIcon={<AddIcon />} onClick={ publish }>

@@ -1,46 +1,34 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { CardActionArea } from '@mui/material';
-import { callFetch } from './Fetch'
 import { useNavigate } from 'react-router-dom';
 
 function GeneralListing ({ listing }) {
   const listingId = listing.id;
-  const [title, setTitle] = React.useState('');
-  const [price, setPrice] = React.useState('');
-  const [thumbnail, setThumbNail] = React.useState('');
-  const [propertyType, setPropertyType] = React.useState('');
-  const [numOfBaths, setNumOfBaths] = React.useState('');
-  const [numOfBedrooms, setNumOfBedrooms] = React.useState('');
-  const [amenities, setAmenities] = React.useState('');
-  const [addressStr, setAddressStr] = React.useState('');
+  const title = listing.title;
+  const price = listing.price;
+  const thumbnail = listing.thumbnail;
+  const propertyType = listing.metadata.propertyType;
+  const numOfBaths = listing.metadata.numOfBaths;
+  const numOfBedrooms = listing.metadata.numOfBedrooms;
+  const amenities = listing.metadata.amenities;
+  const address = listing.address;
+  const bookings = listing.bookings;
   const navigate = useNavigate();
 
-  useEffect(async () => {
-    const data = await callFetch('GET', `/listings/${listingId}`, undefined, false, false);
-    setTitle(data.listing.title);
-    setPrice(data.listing.price);
-    setThumbNail(data.listing.thumbnail);
-    setPropertyType(data.listing.metadata.propertyType);
-    setNumOfBaths(data.listing.metadata.numOfBaths);
-    setNumOfBedrooms(data.listing.metadata.numOfBedrooms);
-    setAmenities(data.listing.metadata.amenities);
-    const address = data.listing.address;
+  console.log(bookings);
 
-    let addressStrCompile = '';
-    (address.street !== undefined) && (addressStrCompile += address.street + ' ');
-    (address.city !== undefined) && (addressStrCompile += address.city + ' ');
-    (address.state !== undefined) && (addressStrCompile += address.state + ' ');
-    (address.postcode !== undefined) && (addressStrCompile += address.postcode + ' ');
-    (address.country !== undefined) && (addressStrCompile += address.country + ' ');
-
-    setAddressStr(addressStrCompile);
-  }, [listingId])
+  let addressStr = '';
+  (address.street !== undefined) && (addressStr += address.street + ' ');
+  (address.city !== undefined) && (addressStr += address.city + ' ');
+  (address.state !== undefined) && (addressStr += address.state + ' ');
+  (address.postcode !== undefined) && (addressStr += address.postcode + ' ');
+  (address.country !== undefined) && (addressStr += address.country + ' ');
 
   return (
     <>
-      <Card style={{ width: '18rem' }} onClick={() => navigate(`/listing/viewlisting/${listing.id}`)}>
+      <Card style={{ width: '18rem' }} onClick={() => navigate(`/listing/viewlisting/${listingId}`)}>
         <CardActionArea>
           <Card.Img variant="top" src={thumbnail} />
           <Card.Body>
@@ -53,6 +41,18 @@ function GeneralListing ({ listing }) {
             <ListGroupItem>Number of Bathrooms: {(numOfBaths !== undefined) ? <> {numOfBaths} </> : 'N/A'}</ListGroupItem>
             <ListGroupItem>Number of Bedrooms: {(numOfBedrooms !== undefined) ? <> {numOfBedrooms} </> : 'N/A'}</ListGroupItem>
             <ListGroupItem>Amenities: {(amenities !== undefined) ? <> {amenities} </> : 'N/A'}</ListGroupItem>
+              {(bookings.length !== 0) &&
+                <>
+                <ListGroupItem>Booking Status:
+                <ul>
+                  {bookings.map((a, idx) => {
+                    return (
+                      <li key={idx}>Booking from {new Date(a.dateRange.start).toLocaleDateString()} to {new Date(a.dateRange.end).toLocaleDateString()}: {a.status}</li>
+                    )
+                  })}
+                </ul></ListGroupItem>
+                </>
+                }
           </ListGroup>
         </CardActionArea>
       </Card>

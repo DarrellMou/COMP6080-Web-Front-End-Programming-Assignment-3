@@ -16,7 +16,7 @@ function Listing ({ listing, isYourListing }) {
   const [numOfBedrooms, setNumOfBedrooms] = React.useState('');
   const [amenities, setAmenities] = React.useState('');
   const [addressStr, setAddressStr] = React.useState('');
-  const [availabilities, setAvailabilities] = React.useState([]);
+  const [availability, setAvailability] = React.useState([]);
   const navigate = useNavigate();
 
   useEffect(async () => {
@@ -28,7 +28,7 @@ function Listing ({ listing, isYourListing }) {
     setNumOfBaths(data.listing.metadata.numOfBaths);
     setNumOfBedrooms(data.listing.metadata.numOfBedrooms);
     setAmenities(data.listing.metadata.amenities);
-    setAvailabilities(data.listing.availability);
+    setAvailability(data.listing.availability);
     const address = data.listing.address;
 
     let addressStrCompile = '';
@@ -58,9 +58,9 @@ function Listing ({ listing, isYourListing }) {
             {isYourListing &&
             <>
               <Button onClick={() => navigate(`/listing/editlisting/${listingId}`)} variant="primary">Edit</Button>
-              {availabilities.length === 0
+              {availability.length === 0
                 ? <Button onClick={() => navigate(`/listing/publishlisting/${listingId}`)} variant="primary">Publish</Button>
-                : <Button onClick={() => { unpublish(listingId, setAvailabilities) }} variant="primary">Unpublish</Button>}
+                : <Button onClick={() => { unpublish(listingId, setAvailability) }} variant="primary">Unpublish</Button>}
             </>
             }
         </ListGroup>

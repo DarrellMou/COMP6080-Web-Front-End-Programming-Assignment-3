@@ -1,11 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Nav, Container, Navbar, NavDropdown } from 'react-bootstrap'
+import { Nav, Container, Navbar } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import Button from '@mui/material/Button';
-// import SearchIcon from '@mui/icons-material/Search';
-// import { red } from '@mui/material/colors';
 
 function NavBar ({ setIsTokenEmpty }) {
   const navigate = useNavigate();
@@ -37,23 +34,18 @@ function NavBar ({ setIsTokenEmpty }) {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="me-auto">
-          <Nav.Link as={Link} to="/placeholder">:]</Nav.Link>
+            {!(localStorage.getItem('curToken') === null) ? (<Nav.Link as={Link} to="/listing/yourlistings">Your Listings</Nav.Link>) : <></>}
         </Nav>
         <Nav>
-          <NavDropdown title="Menu" id="collasible-nav-dropdown">
             {(localStorage.getItem('curToken') === null)
               ? (
               <>
-                <NavDropdown.Item as={Link} to="/login">Login</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/register">Register</NavDropdown.Item>
+                <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                <Nav.Link as={Link} to="/register">Register</Nav.Link>
               </>)
               : <>
-                <NavDropdown.Item onClick={submitLogOut}>Logout</NavDropdown.Item>
+                <Nav.Link onClick={submitLogOut}>Logout</Nav.Link>
               </>}
-            {!(localStorage.getItem('curToken') === null) ? (<NavDropdown.Divider />) : <></>}
-            {!(localStorage.getItem('curToken') === null) ? (<NavDropdown.Item as={Link} to="/listing/yourlistings">Your Listings</NavDropdown.Item>) : <></>}
-            <NavDropdown.Item as={Link} to='/test'>Test</NavDropdown.Item>
-          </NavDropdown>
         </Nav>
       </Navbar.Collapse>
       </Container>

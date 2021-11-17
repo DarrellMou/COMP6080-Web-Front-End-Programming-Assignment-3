@@ -8,7 +8,6 @@ import CreateListing from './components/CreateListing';
 import EditListing from './components/EditListing';
 import PublishListing from './components/PublishListing';
 import ViewListing from './components/ViewListing';
-import Test from './components/Test';
 // import Search from './components/Search';
 
 function App () {
@@ -31,7 +30,6 @@ function App () {
         <Route path="listing/editlisting/:id" element={<EditListing />}/>
         <Route path="listing/publishlisting/:id" element={<PublishListing />}/>
         <Route path="listing/viewlisting/:id" element={<ViewListing />}/>
-        <Route path="/test" element={<Test />}/>
       </Routes>
     </Router>
   );
