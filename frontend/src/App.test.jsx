@@ -24,7 +24,7 @@ describe('NavBar', () => {
     </Router>
     );
     
-    console.log(navBar.children().getElement().text());
+    console.log(navBar.children().getElement().key);
   });
 
   // it('after logging in or registering, contains logout link', () => {
