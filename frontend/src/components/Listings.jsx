@@ -19,6 +19,34 @@ const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+function useWindowDimensions () {
+  const hasWindow = typeof window !== 'undefined';
+
+  const getWindowDimensions = () => {
+    const width = hasWindow ? window.innerWidth : null;
+    const height = hasWindow ? window.innerHeight : null;
+    return {
+      width,
+      height,
+    };
+  }
+
+  const [windowDimensions, setWindowDimensions] = React.useState(getWindowDimensions());
+
+  React.useEffect(() => {
+    if (hasWindow) {
+      const handleResize = () => {
+        setWindowDimensions(getWindowDimensions());
+      }
+
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, [hasWindow]);
+
+  return windowDimensions;
+}
+
 export function AllListings () {
   const [errorMsg, setErrorMsg] = React.useState('');
   const [listings, setListings] = React.useState([]);
@@ -33,6 +61,9 @@ export function AllListings () {
   const [sort, setSort] = React.useState(1);
   const [open, setOpen] = React.useState(false);
   const [showClearFilter, setShowClearFilter] = React.useState(false);
+
+  const { width } = useWindowDimensions();
+  const xs = Math.round(12 / (width / 300));
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -272,7 +303,7 @@ export function AllListings () {
         <Grid container spacing={2}>
           {listings.map((l, idx) => {
             return (
-              <Grid item xs={3} key={idx}>
+              <Grid item xs={xs} key={idx}>
                 <GeneralListing listing={l} />
               </Grid>
             )
@@ -287,6 +318,10 @@ export function YourListings () {
   const [errorMsg, setErrorMsg] = React.useState('');
   const [listings, setListings] = React.useState([]);
   const navigate = useNavigate();
+
+  const { width } = useWindowDimensions();
+  const xs = Math.round(12 / (width / 400));
+
   React.useEffect(async () => {
     const ownerEmail = localStorage.getItem('curEmail');
     try {
@@ -307,7 +342,7 @@ export function YourListings () {
       <Grid container spacing={2}>
         {listings.map((l, idx) => {
           return (
-            <Grid item xs={3} key={idx}>
+            <Grid item xs={xs} key={idx}>
               <YourListing listing={l} />
             </Grid>
           )
