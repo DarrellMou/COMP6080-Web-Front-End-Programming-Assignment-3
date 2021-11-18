@@ -10,7 +10,7 @@ function GeneralListing ({ listing }) {
   const price = listing.price;
   const thumbnail = listing.thumbnail;
   const propertyType = listing.metadata.propertyType;
-  const numOfBaths = listing.metadata.numOfBaths;
+  const numOfBathrooms = listing.metadata.numOfBathrooms;
   const numOfBedrooms = listing.metadata.numOfBedrooms;
   const amenities = listing.metadata.amenities;
   const address = listing.address;
@@ -36,7 +36,7 @@ function GeneralListing ({ listing }) {
             <ListGroupItem>Address: {(addressStr !== '') ? <> {addressStr} </> : 'N/A'}</ListGroupItem>
             <ListGroupItem>${price} per night</ListGroupItem>
             <ListGroupItem>Property Type: {(propertyType !== undefined) ? <> {propertyType} </> : 'N/A'}</ListGroupItem>
-            <ListGroupItem>Number of Bathrooms: {(numOfBaths !== undefined) ? <> {numOfBaths} </> : 'N/A'}</ListGroupItem>
+            <ListGroupItem>Number of Bathrooms: {(numOfBathrooms !== undefined) ? <> {numOfBathrooms} </> : 'N/A'}</ListGroupItem>
             <ListGroupItem>Number of Bedrooms: {(numOfBedrooms !== undefined) ? <> {numOfBedrooms} </> : 'N/A'}</ListGroupItem>
             <ListGroupItem>Amenities: {(amenities !== undefined) ? <> {amenities} </> : 'N/A'}</ListGroupItem>
               {(bookings.length !== 0) &&

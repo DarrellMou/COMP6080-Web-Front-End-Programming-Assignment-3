@@ -272,7 +272,7 @@ function ViewListing () {
               </div>
               <br />
               <TextField
-                id='date'
+                id='start-date'
                 label='Start'
                 type='date'
                 onBlur={e => (addBooking(e.target.value, 'start'))}
@@ -282,7 +282,7 @@ function ViewListing () {
                 }}
               />
               <TextField
-                id='date'
+                id='end-date'
                 label='End'
                 type='date'
                 onBlur={e => (addBooking(e.target.value, 'end'))}
