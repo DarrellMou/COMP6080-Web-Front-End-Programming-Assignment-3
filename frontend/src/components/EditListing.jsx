@@ -134,7 +134,7 @@ function EditListing () {
             </Form.Group>
             <Form.Group controlId="formFile" className="mb-3">
               <Form.Label>Thumbnail</Form.Label>
-              <Form.Control onChange={e => setThumbnail(e.target.files[0])} type="file" />
+              <Form.Control onChange={e => setThumbnail(e.target.files[0])} type="file" data-cy="file-input-thumbnail" />
             </Form.Group>
             <Form.Group controlId="formFileImages" className="mb-3">
               <Form.Label>Images</Form.Label>

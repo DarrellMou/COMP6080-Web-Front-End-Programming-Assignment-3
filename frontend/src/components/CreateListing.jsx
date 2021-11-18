@@ -107,18 +107,18 @@ function CreateListing () {
             </Form.Group>
             <Form.Group controlId="formFileThumbnail" className="mb-3">
               <Form.Label>Thumbnail</Form.Label>
-              <Form.Control onChange={e => setThumbnail(e.target.files[0])} type="file" />
+              <Form.Control onChange={e => setThumbnail(e.target.files[0])} type="file" data-cy="file-input-thumbnail" />
             </Form.Group>
             <Form.Group controlId="formFileImages" className="mb-3">
               <Form.Label>Images</Form.Label>
-              <Form.Control onChange={e => setImages(e.target.files)} type="file" multiple />
+              <Form.Control onChange={e => setImages(e.target.files)} type="file" multiple data-cy="file-input-images" />
             </Form.Group>
             <Row className="mb-3">
               <Form.Group as={Col} controlId="formGridPropertyType">
                 <Form.Label>Property Type</Form.Label>
                 <Form.Control onBlur={e => setPropertyType(e.target.value)} type="text" placeholder="Enter property type" />
               </Form.Group>
-              <Form.Group as={Col} controlId="formGridNumOfBaths">
+              <Form.Group as={Col} controlId="formGridNumOfBathrooms">
                 <Form.Label>Number of bathrooms</Form.Label>
                 <Form.Control onBlur={e => setNumOfBathrooms(e.target.value)} type="text" />
               </Form.Group>

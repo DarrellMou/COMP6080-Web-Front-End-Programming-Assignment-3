@@ -47,7 +47,7 @@ function PublishListing () {
             <Grid item xs={2} key={idx}>
               <Stack component="form" noValidate spacing={3}>
                 <TextField
-                  id="date"
+                  id="start-date"
                   label="Start"
                   type="date"
                   onBlur={e => (addAvailability(e.target.value, idx, 'start'))}
@@ -57,7 +57,7 @@ function PublishListing () {
                   }}
                 />
                 <TextField
-                  id="date"
+                  id="end-date"
                   label="End"
                   type="date"
                   onBlur={e => (addAvailability(e.target.value, idx, 'end'))}
