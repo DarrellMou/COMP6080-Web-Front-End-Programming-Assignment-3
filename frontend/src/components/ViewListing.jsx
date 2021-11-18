@@ -210,7 +210,6 @@ function ViewListing () {
         <div>Address: {addressStr}</div>
         <div>Amenities: {amenities}</div>
         <div>Price: {price}</div>
-        {/* <div>Images: {images}</div> */}
         <div>Property type: {propertyType}</div>
         <div>Reviews:
           {reviews.map((r, idx) => {

@@ -110,11 +110,36 @@ export function AllListings () {
         }
       }
       return true;
+    }).sort((a, b) => {
+      if (sort === 1) {
+        return 1;
+      } else if (sort === 2 || sort === 3) {
+        let ascending = 1;
+        if (sort === 3) {
+          ascending = -1;
+        }
+        if (a.reviews.length === 0 && b.reviews.length === 0) {
+          return 1;
+        } else if (b.reviews.length === 0) {
+          return ascending;
+        } else if (a.reviews.length === 0) {
+          return -ascending;
+        } else {
+          const aReview = a.reviews.reduce((c, d) => c + d.rating, 0) / a.reviews.length;
+          const bReview = b.reviews.reduce((c, d) => c + d.rating, 0) / b.reviews.length;
+          if (aReview < bReview) {
+            return -ascending;
+          } else {
+            return ascending;
+          }
+        }
+      }
+      return 1;
     })
     setListings(newList);
     handleClose();
+    setSort('');
     setShowClearFilter(true);
-    console.log(sort);
   };
 
   React.useEffect(async () => {
@@ -231,7 +256,7 @@ export function AllListings () {
                 </Form.Group>
               </Row>
               <Form.Label>Sort</Form.Label>
-              <Form.Select onChange={e => setSort(e.target.value)}>
+              <Form.Select value={sort} onChange={e => setSort(parseInt(e.target.value))}>
                 <option value="1">Alphabetically</option>
                 <option value="2">Reviews Ascending</option>
                 <option value="3">Reviews Descending</option>
