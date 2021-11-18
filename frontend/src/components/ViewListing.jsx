@@ -218,7 +218,7 @@ function ViewListing () {
                 <div>User: {r.userEmail}</div>
                 <div>Rating: {r.rating} / 5</div>
                 <div>Comments: {r.comment}</div>
-                <br/>
+                <br />
               </div>
             )
           })}
@@ -321,6 +321,7 @@ function ViewListing () {
                       })}
                     </Form.Select>
                   </FloatingLabel>
+                  <br />
                   <Ratings
                     rating={reviewRating}
                     widgetDimensions="40px"
