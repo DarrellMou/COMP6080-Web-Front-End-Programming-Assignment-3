@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom';
 import { callFetch } from './Fetch'
 
-function Login ({ setIsTokenEmpty }) {
+export default function Login ({ setIsTokenEmpty }) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
@@ -80,5 +80,3 @@ LoginForm.propTypes = {
 LoginButton.propTypes = {
   onClick: PropTypes.func,
 }
-
-export default Login;

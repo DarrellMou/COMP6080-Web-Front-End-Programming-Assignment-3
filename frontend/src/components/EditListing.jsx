@@ -98,30 +98,30 @@ function EditListing () {
       { (localStorage.getItem('curToken') !== null)
         ? (
           <Form>
-            <TextForm formLabel="Title" defaultValue={title} onBlur={e => setTitle(e.target.value)} type="text" placeholder="Enter title" />
-            <TextForm formLabel="Address" defaultValue={street} onBlur={e => setStreet(e.target.value)} type="text" placeholder="1234 Main St" />
+            <TextForm controlId="formGridTitle" formLabel="Title" defaultValue={title} onBlur={e => setTitle(e.target.value)} type="text" placeholder="Enter title" />
+            <TextForm controlId="formGridAddress" formLabel="Address" defaultValue={street} onBlur={e => setStreet(e.target.value)} type="text" placeholder="1234 Main St" />
             <Row className="mb-3">
-              <TextFormCol formLabel="City" defaultValue={city} onBlur={e => setCity(e.target.value)} type="text" />
-              <TextFormCol formLabel="State" defaultValue={state} onBlur={e => setState(e.target.value)} type="text" />
-              <TextFormCol formLabel="Zip" defaultValue={postcode} onBlur={e => setPostcode(e.target.value)} type="number" />
-              <TextFormCol formLabel="Country" defaultValue={country} onBlur={e => setCountry(e.target.value)} type="text" />
+              <TextFormCol controlId="formGridCity" formLabel="City" defaultValue={city} onBlur={e => setCity(e.target.value)} type="text" />
+              <TextFormCol controlId="formGridState" formLabel="State" defaultValue={state} onBlur={e => setState(e.target.value)} type="text" />
+              <TextFormCol controlId="formGridZip" formLabel="Zip" defaultValue={postcode} onBlur={e => setPostcode(e.target.value)} type="number" />
+              <TextFormCol controlId="formGridCountry" formLabel="Country" defaultValue={country} onBlur={e => setCountry(e.target.value)} type="text" />
             </Row>
-            <TextForm formLabel="Price" defaultValue={price} onBlur={e => setPrice(e.target.value)} type="text" placeholder="Enter price" />
-            <Form.Group className="mb-3">
+            <TextForm controlId="formGridPrice" formLabel="Price" defaultValue={price} onBlur={e => setPrice(e.target.value)} type="text" placeholder="Enter price" />
+            <Form.Group className="mb-3" controlId="formFile">
               <Form.Label>Thumbnail</Form.Label>
               <Form.Control onChange={e => setThumbnail(e.target.files[0])} type="file" data-cy="file-input-thumbnail" />
             </Form.Group>
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-3" controlId="formFileImages">
               <Form.Label>Images</Form.Label>
               <Form.Control onChange={e => setImages(e.target.files)} type="file" multiple />
             </Form.Group>
             <Row className="mb-3">
-              <TextFormCol formLabel="Property Type" defaultValue={propertyType} onBlur={e => setPropertyType(e.target.value)} type="text"/>
-              <TextFormCol formLabel="Number of bathrooms" defaultValue={numOfBathrooms} onBlur={e => setNumOfBathrooms(e.target.value)} type="text"/>
-              <TextFormCol formLabel="Number of bedrooms" defaultValue={numOfBedrooms} onBlur={e => setNumOfBedrooms(e.target.value)} type="text"/>
-              <TextFormCol formLabel="Number of beds" defaultValue={numOfBedrooms} onBlur={e => setNumOfBeds(e.target.value)} type="text"/>
+              <TextFormCol controlId="formGridPropertyType" formLabel="Property Type" defaultValue={propertyType} onBlur={e => setPropertyType(e.target.value)} type="text"/>
+              <TextFormCol controlId="formGridNumOfBaths" formLabel="Number of bathrooms" defaultValue={numOfBathrooms} onBlur={e => setNumOfBathrooms(e.target.value)} type="text"/>
+              <TextFormCol controlId="formGridNumOfBedrooms" formLabel="Number of bedrooms" defaultValue={numOfBedrooms} onBlur={e => setNumOfBedrooms(e.target.value)} type="text"/>
+              <TextFormCol controlId="formGridNumOfBeds" formLabel="Number of beds" defaultValue={numOfBedrooms} onBlur={e => setNumOfBeds(e.target.value)} type="text"/>
             </Row>
-            <FloatingLabel label="Amenities">
+            <FloatingLabel label="Amenities" controlId="floatingTextarea">
               <Form.Control
                 defaultValue={amenities}
                 as="textarea"
@@ -143,18 +143,18 @@ function EditListing () {
   );
 }
 
-export const TextForm = ({ formLabel, defaultValue, onBlur, type, placeholder }) => {
+export const TextForm = ({ controlId, formLabel, defaultValue, onBlur, type, placeholder }) => {
   return (
-    <Form.Group className="mb-3">
+    <Form.Group className="mb-3" controlId={controlId}>
       <Form.Label>{formLabel}</Form.Label>
       <Form.Control defaultValue={defaultValue} onBlur={onBlur} type={type} placeholder={placeholder} />
     </Form.Group>
   )
 }
 
-export const TextFormCol = ({ formLabel, defaultValue, onBlur, type, placeholder }) => {
+export const TextFormCol = ({ controlId, formLabel, defaultValue, onBlur, type, placeholder }) => {
   return (
-    <Form.Group className="mb-3" as={Col}>
+    <Form.Group className="mb-3" as={Col} controlId={controlId}>
       <Form.Label>{formLabel}</Form.Label>
       <Form.Control defaultValue={defaultValue} onBlur={onBlur} type={type} placeholder={placeholder} />
     </Form.Group>
@@ -162,6 +162,7 @@ export const TextFormCol = ({ formLabel, defaultValue, onBlur, type, placeholder
 }
 
 TextForm.propTypes = {
+  controlId: PropTypes.string,
   formLabel: PropTypes.string,
   defaultValue: PropTypes.string,
   onBlur: PropTypes.func,
@@ -170,6 +171,7 @@ TextForm.propTypes = {
 }
 
 TextFormCol.propTypes = {
+  controlId: PropTypes.string,
   formLabel: PropTypes.string,
   defaultValue: PropTypes.string,
   onBlur: PropTypes.func,

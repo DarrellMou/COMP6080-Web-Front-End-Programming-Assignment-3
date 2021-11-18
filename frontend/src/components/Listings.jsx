@@ -63,7 +63,7 @@ export function AllListings () {
   const [showClearFilter, setShowClearFilter] = React.useState(false);
 
   const { width } = useWindowDimensions();
-  const xs = Math.round(12 / (width / 300));
+  const xs = Math.round(12 / (width / 400));
 
   const handleClickOpen = () => {
     setOpen(true);
