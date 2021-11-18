@@ -19,6 +19,9 @@ function PublishListing () {
 
   const publish = async () => {
     try {
+      const listingData = await callFetch('GET', `/listings/${id}`, undefined, false, true);
+      listingData.listing.metadata.liveDate = new Date();
+      await callFetch('PUT', `/listings/${id}`, listingData, true, true);
       const body = {
         availability: availability
       };
@@ -33,7 +36,6 @@ function PublishListing () {
     const newAvailability = [...availability];
     newAvailability[idx][from] = date;
     setAvailability(newAvailability);
-    console.log(availability);
   }
   return (
     <>

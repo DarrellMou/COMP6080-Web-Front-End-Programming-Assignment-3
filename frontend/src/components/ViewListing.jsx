@@ -24,7 +24,7 @@ function ViewListing () {
   const [numOfBeds, setNumOfBeds] = React.useState('');
   const [images, setImages] = React.useState([]);
   const [availability, setAvailability] = React.useState([]);
-  const [reviews, setReviews] = React.useState('');
+  const [reviews, setReviews] = React.useState([]);
   const [amenities, setAmenities] = React.useState('');
   const [bookings, setBookings] = React.useState([]);
   const [createdBookings, setCreatedBookings] = React.useState({});
@@ -41,7 +41,6 @@ function ViewListing () {
 
   const changeRating = (rating) => {
     setReviewRating(rating);
-    console.log(reviewRating);
   }
 
   const handleClickOpenMakeBooking = () => {
@@ -76,7 +75,6 @@ function ViewListing () {
       })
       const curListingOwnerBookings = ownerBookings.filter(b => parseInt(b.listingId) === parseInt(id));
       setBookings(curListingOwnerBookings);
-      console.log(curListingOwnerBookings);
     }
 
     let addressStrCompile = '';
@@ -87,12 +85,10 @@ function ViewListing () {
     (listing.address.country !== undefined) && (addressStrCompile += listing.address.country + ' ');
 
     setAddressStr(addressStrCompile);
-    console.log(listing);
     setAmenities(listing.metadata.amenities);
     setPrice(listing.price);
 
     setImages(listing.metadata.images);
-    console.log(listing.metadata.images);
     setPropertyType(listing.metadata.propertyType);
     setReviews(listing.reviews);
     setAvailability(listing.availability);
@@ -110,7 +106,6 @@ function ViewListing () {
   }
 
   const calculateBookingPrice = () => {
-    console.log(createdBookings);
     if (!createdBookings.start || isNaN((new Date(createdBookings.start).getTime()))) {
       setErrorMsg('Please enter a start date.');
     } else if (!createdBookings.end || isNaN((new Date(createdBookings.end).getTime()))) {
@@ -148,7 +143,6 @@ function ViewListing () {
 
   const makeBooking = async () => {
     try {
-      console.log(calculateBookingPrice);
       const body = {
         dateRange: {
           start: createdBookings.start,
@@ -175,14 +169,23 @@ function ViewListing () {
   }
 
   const submitReview = async () => {
+    if (reviewBookingId === -1) {
+      setErrorMsg('Please select a booking');
+      return;
+    }
     try {
+      const ownerEmail = localStorage.getItem('curEmail');
       const body = {
         review: {
+          userEmail: ownerEmail,
           rating: reviewRating,
           comment: reviewText
         }
       }
       await callFetch('PUT', `/listings/${id}/review/${reviewBookingId}`, body, true, true);
+      setReviews([...reviews, body.review]);
+      setReviewBookingId(-1);
+      handleCloseAddReview();
     } catch (error) {
       setErrorMsg(error);
     }
@@ -209,8 +212,19 @@ function ViewListing () {
         <div>Price: {price}</div>
         {/* <div>Images: {images}</div> */}
         <div>Property type: {propertyType}</div>
-        <div>Reviews: {reviews}</div>
-        <div>Review rating: </div>
+        <div>Reviews:
+          {reviews.map((r, idx) => {
+            return (
+              <div key={idx}>
+                <div>User: {r.userEmail}</div>
+                <div>Rating: {r.rating} / 5</div>
+                <div>Comments: {r.comment}</div>
+                <br/>
+              </div>
+            )
+          })}
+        </div>
+        <div>Review rating: {((reviews.reduce((a, b) => a + b.rating, 0) / reviews.length) || 0).toFixed(2)}</div>
         <div>Number of bedrooms: {numOfBedrooms}</div>
         <div>Number of beds: {numOfBeds}</div>
         <div>Number of bathrooms: {numOfBathrooms}</div>
@@ -298,9 +312,9 @@ function ViewListing () {
               <Dialog open={openAddReview} onClose={handleCloseAddReview}>
                 <DialogTitle>Review</DialogTitle>
                 <DialogContent>
-                  <FloatingLabel controlId="floatingSelectGrid" label="Works with selects">
+                  <FloatingLabel controlId="floatingSelectGrid" label="Booking">
                     <Form.Select onChange={(e) => setReviewBookingId(e.target.value)} aria-label="Booking">
-                      <option>Select a booking</option>
+                      <option value={-1}>Select a booking</option>
                       {bookings.filter((b) => b.status === 'accepted').map((b, idx) => {
                         return (
                           <option key={idx} value={b.id}>Booking from {b.dateRange.start} to {b.dateRange.end}</option>
@@ -331,6 +345,7 @@ function ViewListing () {
                       onBlur={e => setReviewText(e.target.value)}
                     />
                   </FloatingLabel>
+                  {(errorMsg === '') ? <></> : (<div className='error-message'>{errorMsg}</div>)}
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={submitReview}>Submit</Button>

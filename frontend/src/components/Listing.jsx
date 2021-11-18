@@ -54,13 +54,16 @@ function Listing ({ listing, isYourListing }) {
           <ListGroupItem>Property Type: {(propertyType !== undefined) ? <> {propertyType} </> : 'N/A'}</ListGroupItem>
           <ListGroupItem>Number of Bathrooms: {(numOfBaths !== undefined) ? <> {numOfBaths} </> : 'N/A'}</ListGroupItem>
           <ListGroupItem>Number of Bedrooms: {(numOfBedrooms !== undefined) ? <> {numOfBedrooms} </> : 'N/A'}</ListGroupItem>
-          <ListGroupItem>Amenities: {(amenities !== undefined) ? <> {amenities} </> : 'N/A'}</ListGroupItem>
+          <ListGroupItem>Amenisdsadties: {(amenities !== undefined) ? <> {amenities} </> : 'N/A'}</ListGroupItem>
             {isYourListing &&
             <>
               <Button onClick={() => navigate(`/listing/editlisting/${listingId}`)} variant="primary">Edit</Button>
               {availability.length === 0
                 ? <Button onClick={() => navigate(`/listing/publishlisting/${listingId}`)} variant="primary">Publish</Button>
-                : <Button onClick={() => { unpublish(listingId, setAvailability) }} variant="primary">Unpublish</Button>}
+                : <>
+                <Button onClick={() => { navigate('/listing/yourlistings/bookingrequests/:id') }} variant="primary">View Booking Requests</Button>
+                <Button onClick={() => { unpublish(listingId, setAvailability) }} variant="primary">Unpublish</Button>
+                </>}
             </>
             }
         </ListGroup>

@@ -17,14 +17,14 @@ function NavBar ({ setIsTokenEmpty }) {
       });
 
       if (!res.ok) {
-        console.log(res.statusText);
+        alert(res.statusText);
       } else {
         localStorage.removeItem('curToken');
         setIsTokenEmpty(true);
         navigate('/');
       }
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   }
   return (<>

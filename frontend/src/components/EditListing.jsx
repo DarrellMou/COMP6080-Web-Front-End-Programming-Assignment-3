@@ -57,11 +57,9 @@ function EditListing () {
     e.preventDefault();
     const promises = [];
     Array.from(images).forEach(async (i) => promises.push(getBase64(i)));
-    console.log(promises);
     Promise.all(promises)
       .then(async (imagesList) => {
         try {
-          console.log(imagesList);
           const body = {
             title: title,
             address: {
@@ -81,8 +79,6 @@ function EditListing () {
               images: imagesList
             }
           }
-          console.log(imagesList);
-          console.log(body);
           if (typeof thumbnail !== 'string') {
             const data = await getBase64(thumbnail);
             body.thumbnail = data;

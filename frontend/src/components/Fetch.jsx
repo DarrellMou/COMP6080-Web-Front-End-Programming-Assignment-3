@@ -23,10 +23,9 @@ export function callFetch (method, path, body, hasContentType, hasToken) {
         } else {
           response.json().then(errorMsg => {
             reject(errorMsg.error);
-            console.log(errorMsg);
           });
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => alert(err));
   });
 }

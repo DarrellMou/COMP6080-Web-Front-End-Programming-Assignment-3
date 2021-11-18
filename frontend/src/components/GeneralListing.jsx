@@ -17,8 +17,6 @@ function GeneralListing ({ listing }) {
   const bookings = listing.bookings;
   const navigate = useNavigate();
 
-  console.log(bookings);
-
   let addressStr = '';
   (address.street !== undefined) && (addressStr += address.street + ' ');
   (address.city !== undefined) && (addressStr += address.city + ' ');

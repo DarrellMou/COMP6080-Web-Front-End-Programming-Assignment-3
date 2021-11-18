@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import { unpublish } from './UnpublishListing';
 
 function YourListing ({ listing }) {
+  const listingId = listing.id;
   const [title, setTitle] = React.useState('');
   const [price, setPrice] = React.useState('');
   const [thumbnail, setThumbNail] = React.useState('');
@@ -15,11 +16,11 @@ function YourListing ({ listing }) {
   const [numOfBedrooms, setNumOfBedrooms] = React.useState('');
   const [amenities, setAmenities] = React.useState('');
   const [addressStr, setAddressStr] = React.useState('');
-  const [availabilities, setAvailabilities] = React.useState([]);
+  const [availability, setAvailability] = React.useState([]);
   const navigate = useNavigate();
 
   useEffect(async () => {
-    const data = await callFetch('GET', `/listings/${listing.id}`, undefined, false, false);
+    const data = await callFetch('GET', `/listings/${listingId}`, undefined, false, false);
     setTitle(data.listing.title);
     setPrice(data.listing.price);
     setThumbNail(data.listing.thumbnail);
@@ -27,7 +28,7 @@ function YourListing ({ listing }) {
     setNumOfBaths(data.listing.metadata.numOfBaths);
     setNumOfBedrooms(data.listing.metadata.numOfBedrooms);
     setAmenities(data.listing.metadata.amenities);
-    setAvailabilities(data.listing.availability);
+    setAvailability(data.listing.availability);
     const address = data.listing.address;
 
     let addressStrCompile = '';
@@ -56,9 +57,12 @@ function YourListing ({ listing }) {
           <ListGroupItem>Amenities: {(amenities !== undefined) ? <> {amenities} </> : 'N/A'}</ListGroupItem>
           <>
             <Button onClick={() => navigate(`/listing/editlisting/${listing.id}`)} variant="primary">Edit</Button>
-            {availabilities.length === 0
-              ? <Button onClick={() => navigate(`/listing/publishlisting/${listing.id}`)} variant="primary">Publish</Button>
-              : <Button onClick={() => { unpublish(listing.id, setAvailabilities) }} variant="primary">Unpublish</Button>}
+            {availability.length === 0
+              ? <Button onClick={() => navigate(`/listing/publishlisting/${listingId}`)} variant="primary">Publish</Button>
+              : <>
+              <Button onClick={() => { navigate(`/listing/yourlistings/bookingrequests/${listingId}`) }} variant="primary">View Booking Requests</Button>
+              <Button onClick={() => { unpublish(listingId, setAvailability) }} variant="primary">Unpublish</Button>
+              </>}
           </>
         </ListGroup>
       </Card>

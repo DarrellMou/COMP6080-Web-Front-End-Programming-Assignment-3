@@ -119,14 +119,17 @@ export function AllListings () {
 
   React.useEffect(async () => {
     try {
-      const ownerEmail = localStorage.getItem('curEmail');
-      const bookingsData = await callFetch('GET', '/bookings', undefined, false, true);
-      const ownerBookings = bookingsData.bookings.filter((b) => {
-        if (b.owner === ownerEmail) {
-          return true;
-        }
-        return false;
-      })
+      let ownerBookings = [];
+      if (localStorage.getItem('curToken') !== null) {
+        const ownerEmail = localStorage.getItem('curEmail');
+        const bookingsData = await callFetch('GET', '/bookings', undefined, false, true);
+        ownerBookings = bookingsData.bookings.filter((b) => {
+          if (b.owner === ownerEmail) {
+            return true;
+          }
+          return false;
+        })
+      }
 
       const data = await callFetch('GET', '/listings', undefined, false, false);
       const lId = data.listings.map((l, idx) => {

@@ -39,7 +39,6 @@ function CreateListing () {
     e.preventDefault();
     const promises = [];
     Array.from(images).forEach(async (i) => promises.push(getBase64(i)));
-    console.log(promises);
     Promise.all(promises)
       .then(async (imagesList) => {
         try {
