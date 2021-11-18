@@ -242,7 +242,6 @@ export function AllListings () {
         <br />
         <br />
         <Grid container spacing={2}>
-          {/* If email is not empty, only provide listings that belongs to the email */}
           {listings.map((l, idx) => {
             return (
               <Grid item xs={3} key={idx}>
@@ -278,7 +277,6 @@ export function YourListings () {
       ? (<div className='error-message'>{errorMsg}</div>)
       : (
       <Grid container spacing={2}>
-        {/* If email is not empty, only provide listings that belongs to the email */}
         {listings.map((l, idx) => {
           return (
             <Grid item xs={3} key={idx}>
