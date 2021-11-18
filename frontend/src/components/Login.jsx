@@ -31,22 +31,12 @@ function Login ({ setIsTokenEmpty }) {
             <div className="form-box solid">
               <form>
                 <h1 className="login-text">Sign In</h1>
-                <label>Email</label><br></br>
-                <input
-                  type="text"
-                  name="email"
-                  className="login-box"
-                  onBlur={e => setEmail(e.target.value)}
-                /><br></br>
-                <label>Password</label><br></br>
-                <input
-                  type="password"
-                  name="password"
-                  className="login-box"
-                  onBlur={e => setPassword(e.target.value)}
-                /><br></br>
+                <LoginForm formName="Email" formType="text" className="login-box" onBlur={e => setEmail(e.target.value)}/>
+                <br></br>
+                <LoginForm formName="Password" formType="password" className="login-box" onBlur={e => setPassword(e.target.value)}/>
                 {(errorMsg === '') ? <></> : (<div className="error-message">{errorMsg}</div>)}
-                <button onClick={submitLogIn}>Log in</button>
+                <br></br>
+                <LoginButton onClick={submitLogIn} />
               </form>
             </div>
           </div>
@@ -56,11 +46,39 @@ function Login ({ setIsTokenEmpty }) {
   );
 }
 
+export const LoginForm = ({ formName, formType, className, onBlur }) => {
+  return (
+    <>
+      <label>{formName}</label><br></br>
+      <input
+        type={formType}
+        name={formName}
+        className={className}
+        onBlur={onBlur}
+      />
+    </>
+  )
+}
+
+export const LoginButton = ({ onClick }) => {
+  return (
+    <button onClick={onClick}>Log in</button>
+  )
+}
+
 Login.propTypes = {
-  token: PropTypes.string,
   setIsTokenEmpty: PropTypes.func,
-  email: PropTypes.string,
-  setEmail: PropTypes.func
+}
+
+LoginForm.propTypes = {
+  formName: PropTypes.string,
+  formType: PropTypes.string,
+  className: PropTypes.string,
+  onBlur: PropTypes.func,
+}
+
+LoginButton.propTypes = {
+  onClick: PropTypes.func,
 }
 
 export default Login;
