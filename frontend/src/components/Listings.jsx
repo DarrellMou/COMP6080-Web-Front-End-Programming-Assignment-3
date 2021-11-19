@@ -174,6 +174,7 @@ export function AllListings () {
   };
 
   React.useEffect(async () => {
+    let mounted = true;
     try {
       let ownerBookings = [];
       if (localStorage.getItem('curToken') !== null) {
@@ -209,13 +210,16 @@ export function AllListings () {
           const listingsOrdered = publishedListings.sort((a, b) => a.title.localeCompare(b.title)).sort((a, b) => {
             return ((b.bookings.length !== 0) ? 1 : (a.bookings.length !== 0) ? -1 : 1);
           });
-          setAllListings(listingsOrdered);
-          setListings(listingsOrdered);
+          if (mounted) {
+            setAllListings(listingsOrdered);
+            setListings(listingsOrdered);
+          }
         })
         .catch(error => setErrorMsg(error));
     } catch (error) {
       setErrorMsg(error);
     }
+    return () => { mounted = false };
   }, [])
 
   return (
@@ -244,7 +248,7 @@ export function AllListings () {
           <DialogTitle>Search Filter</DialogTitle>
           <DialogContent>
             <Form>
-              <Form.Group className="mb-3">
+              <Form.Group className="mb-3" controlId="formSearch">
                 <Form.Label>Search</Form.Label>
                 <Form.Control onBlur={e => setLocationSearch(e.target.value)} type="text" placeholder="Title/Location" />
               </Form.Group>
@@ -294,7 +298,7 @@ export function AllListings () {
               </Form.Select>
             </Form>
             <DialogActions>
-              <button className="btn btn-outline-primary my-2 my-sm-0" onClick={filterListings}>Search</button>
+              <button id="search-button" className="btn btn-outline-primary my-2 my-sm-0" onClick={filterListings}>Search</button>
             </DialogActions>
           </DialogContent>
         </Dialog>
@@ -323,15 +327,17 @@ export function YourListings () {
   const xs = Math.round(12 / (width / 400));
 
   React.useEffect(async () => {
+    let mounted = true;
     const ownerEmail = localStorage.getItem('curEmail');
     try {
       const data = await callFetch('GET', '/listings', undefined, false, false);
       const listings = data.listings.filter((l) => l.owner === ownerEmail);
       const listingsOrdered = [...listings].sort((a, b) => a.title.localeCompare(b.title));
-      setListings(listingsOrdered);
+      if (mounted) setListings(listingsOrdered);
     } catch (error) {
       setErrorMsg(error);
     }
+    return () => { mounted = false };
   }, [])
 
   return (
