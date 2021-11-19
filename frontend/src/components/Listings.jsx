@@ -228,7 +228,6 @@ export function AllListings () {
       ? (<div className='error-message'>{errorMsg}</div>)
       : (
       <>
-        <br />
         <Button variant="outlined" onClick={handleClickOpen}>
           Search Filters
         </Button>
