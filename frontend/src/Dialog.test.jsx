@@ -2,7 +2,6 @@ import { shallow } from 'enzyme';
 import * as React from 'react';
 import Dialog from '@mui/material/Dialog';
 
-
 describe('Dialog', () => {
   const noop = () => {};
   it('sets open', () => {
