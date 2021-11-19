@@ -121,7 +121,7 @@ context('Signup flow - happy path', () => {
             cy.get('[id^=formGridNumOfBeds]').focus().type('4');
             cy.get('[id^=floatingTextarea]').focus().type('BEST HOUSING!!');
 
-            const fixtureFile1 = null;
+            let fixtureFile1 = null;
             if (i === 4) {
                 fixtureFile1 = `Test${i}.png`;
             } else {
@@ -135,6 +135,13 @@ context('Signup flow - happy path', () => {
 
             cy.contains('Create').click();
             cy.wait(5000);
+
+            cy.get('[class=card]')[i].contains('Publish').click();
+            cy.contains('Make Bookings').click();
+            cy.get('[id=start-date]').focus().type('2021-12-07');
+            cy.get('[id=end-date]').focus().type('2021-12-30');
+            cy.contains('Check Price').click();
+            cy.contains('Confirm Booking').click();
         }
         
     })
