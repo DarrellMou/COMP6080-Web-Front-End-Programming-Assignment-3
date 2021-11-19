@@ -25,36 +25,34 @@ function GeneralListing ({ listing }) {
   (address.country !== undefined) && (addressStr += address.country + ' ');
 
   return (
-    <>
-      <Card style={{ width: '18rem' }} onClick={() => navigate(`/listing/viewlisting/${listingId}`)}>
-        <CardActionArea>
-          <Card.Img variant="top" src={thumbnail} />
-          <Card.Body>
-            <Card.Title>{title}</Card.Title>
-          </Card.Body>
-          <ListGroup className="list-group-flush">
-            <ListGroupItem>Address: {(addressStr !== '') ? <> {addressStr} </> : 'N/A'}</ListGroupItem>
-            <ListGroupItem>${price} per night</ListGroupItem>
-            <ListGroupItem>Property Type: {(propertyType !== undefined) ? <> {propertyType} </> : 'N/A'}</ListGroupItem>
-            <ListGroupItem>Number of Bathrooms: {(numOfBathrooms !== undefined) ? <> {numOfBathrooms} </> : 'N/A'}</ListGroupItem>
-            <ListGroupItem>Number of Bedrooms: {(numOfBedrooms !== undefined) ? <> {numOfBedrooms} </> : 'N/A'}</ListGroupItem>
-            <ListGroupItem>Amenities: {(amenities !== undefined) ? <> {amenities} </> : 'N/A'}</ListGroupItem>
-              {(bookings.length !== 0) &&
-                <>
-                <ListGroupItem>Booking Status:
-                <ul>
-                  {bookings.map((a, idx) => {
-                    return (
-                      <li key={idx}>Booking from {new Date(a.dateRange.start).toLocaleDateString()} to {new Date(a.dateRange.end).toLocaleDateString()}: {a.status}</li>
-                    )
-                  })}
-                </ul></ListGroupItem>
-                </>
-                }
-          </ListGroup>
-        </CardActionArea>
-      </Card>
-    </>
+    <Card style={{ width: '18rem' }} onClick={() => navigate(`/listing/viewlisting/${listingId}`)}>
+      <CardActionArea>
+        <Card.Img variant="top" src={thumbnail} />
+        <Card.Body>
+          <Card.Title>{title}</Card.Title>
+        </Card.Body>
+        <ListGroup className="list-group-flush">
+          <ListGroupItem>Address: {(addressStr !== '') ? <> {addressStr} </> : 'N/A'}</ListGroupItem>
+          <ListGroupItem>${price} per night</ListGroupItem>
+          <ListGroupItem>Property Type: {(propertyType !== undefined) ? <> {propertyType} </> : 'N/A'}</ListGroupItem>
+          <ListGroupItem>Number of Bathrooms: {(numOfBathrooms !== undefined) ? <> {numOfBathrooms} </> : 'N/A'}</ListGroupItem>
+          <ListGroupItem>Number of Bedrooms: {(numOfBedrooms !== undefined) ? <> {numOfBedrooms} </> : 'N/A'}</ListGroupItem>
+          <ListGroupItem>Amenities: {(amenities !== undefined) ? <> {amenities} </> : 'N/A'}</ListGroupItem>
+          {(bookings.length !== 0) &&
+            <>
+            <ListGroupItem>Booking Status:
+            <ul>
+              {bookings.map((a, idx) => {
+                return (
+                  <li key={idx}>Booking from {new Date(a.dateRange.start).toLocaleDateString()} to {new Date(a.dateRange.end).toLocaleDateString()}: {a.status}</li>
+                )
+              })}
+            </ul></ListGroupItem>
+            </>
+          }
+        </ListGroup>
+      </CardActionArea>
+    </Card>
   )
 }
 

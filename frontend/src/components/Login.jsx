@@ -31,12 +31,14 @@ export default function Login ({ setIsTokenEmpty }) {
             <div className="form-box solid">
               <form>
                 <h1 className="login-text">Sign In</h1>
+                <label>Email</label>
                 <LoginForm formName="Email" formType="text" className="login-box" onBlur={e => setEmail(e.target.value)}/>
                 <br></br>
+                <label>Password</label>
                 <LoginForm formName="Password" formType="password" className="login-box" onBlur={e => setPassword(e.target.value)}/>
                 {(errorMsg === '') ? <></> : (<div className="error-message">{errorMsg}</div>)}
                 <br></br>
-                <LoginButton onClick={submitLogIn} />
+                <LoginButton onClick={submitLogIn} text="Login" />
               </form>
             </div>
           </div>
@@ -48,21 +50,18 @@ export default function Login ({ setIsTokenEmpty }) {
 
 export const LoginForm = ({ formName, formType, className, onBlur }) => {
   return (
-    <>
-      <label>{formName}</label><br></br>
-      <input
-        type={formType}
-        name={formName}
-        className={className}
-        onBlur={onBlur}
-      />
-    </>
+    <input
+      type={formType}
+      name={formName}
+      className={className}
+      onBlur={onBlur}
+    />
   )
 }
 
-export const LoginButton = ({ onClick }) => {
+export const LoginButton = ({ onClick, text }) => {
   return (
-    <button onClick={onClick}>Log in</button>
+    <button onClick={onClick}>{text}</button>
   )
 }
 
@@ -79,4 +78,5 @@ LoginForm.propTypes = {
 
 LoginButton.propTypes = {
   onClick: PropTypes.func,
+  text: PropTypes.string,
 }
